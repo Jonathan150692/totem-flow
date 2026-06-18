@@ -277,7 +277,7 @@ function DashboardView({ projects, onSelect }: { projects: Project[]; onSelect: 
   const maxPhase = Math.max(...Object.values(byPhase), 1);
   const upcoming = [...projects]
     .filter((p) => p.sla !== 'DENTRO_TIEMPO' && !['ENTREGADO_OPERACIONES'].includes(p.status))
-    .sort((a, b) => (a.sla === 'VENCIDO' ? -1 : 1));
+    .sort((a) => (a.sla === 'VENCIDO' ? -1 : 1));
 
   return (
     <div className="p-6 space-y-6">
