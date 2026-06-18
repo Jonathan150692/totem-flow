@@ -1,0 +1,180 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                    🚀 TOTEM FLOW — LISTO PARA PUBLICAR                        ║
+║                                                                                ║
+║            Plataforma de gestión de proyectos con checklist dinámico          ║
+║                     Stack: Next.js 15 + React 19 + Tailwind                   ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+📦 CONTENIDO DE ESTA CARPETA
+─────────────────────────────────────────────────────────────────────────────────
+
+1️⃣  DOCUMENTACIÓN (20 archivos .md)
+    └─ Especificación completa de la plataforma
+       • Requerimientos funcionales y técnicos
+       • Arquitectura, modelo de datos, flujo de procesos
+       • Matriz de roles, reglas de negocio, wireframes
+       • Roadmap, MVP, riesgos, seguridad, plan de pruebas
+       • Prompts listos para iniciar desarrollo real (backend, frontend, BD)
+
+2️⃣  CÓDIGO FUENTE (8 archivos .js/.ts/.tsx/.json/.css)
+    └─ Proyecto Next.js 15 completo, listo para correr/publicar
+       • app/page.tsx → Componente principal TOTEM Flow
+       • app/layout.tsx → Layout raíz
+       • app/globals.css → Estilos Tailwind
+       • package.json → Dependencias
+       • tailwind.config.js, tsconfig.json, next.config.js
+       • .gitignore, vercel.json
+
+3️⃣  GUÍAS (2 archivos .md)
+    ├─ PUBLICAR.md → Cómo subir a GitHub + Vercel en 5 pasos
+    └─ README.md → Guía del proyecto, stack, estructura
+
+─────────────────────────────────────────────────────────────────────────────────
+
+🎯 QUÉ HACER AHORA
+─────────────────────────────────────────────────────────────────────────────────
+
+OPCIÓN A: Si quieres ver el prototipo corriendo LOCALMENTE (en tu máquina)
+──────────────────────────────────────────────────────────────────────────────
+
+1. Instala Node.js desde https://nodejs.org (la versión LTS)
+
+2. En la terminal, navega a esta carpeta:
+   cd /ruta/a/esta/carpeta
+
+3. Instala las dependencias:
+   npm install
+
+4. Corre en desarrollo (abre http://localhost:3000):
+   npm run dev
+
+5. Verás el Dashboard, Kanban y Checklist dinámico en vivo
+
+OPCIÓN B: Si quieres publicar ONLINE (para que todos tus colaboradores vean)
+───────────────────────────────────────────────────────────────────────────
+
+Sigue la GUÍA COMPLETA en el archivo: PUBLICAR.md
+
+TL;DR:
+   1. Crea cuenta GitHub (https://github.com/signup)
+   2. Crea repositorio nuevo
+   3. Sube este código: git init → git add . → git commit → git push
+   4. Ve a https://vercel.com/sign-up → conecta con GitHub
+   5. Importa el repo → Vercel auto-deploya
+   6. Tu URL estará lista en ~60 segundos: https://totem-flow.vercel.app
+
+─────────────────────────────────────────────────────────────────────────────────
+
+📚 ENTENDER LA ESPECIFICACIÓN
+─────────────────────────────────────────────────────────────────────────────────
+
+Si quieres entender TODO sobre la plataforma, lee en este orden:
+
+1. 01_requerimientos_funcionales.md
+   → Qué debe hacer (features, módulos, roles)
+
+2. 03_arquitectura_general.md
+   → Cómo se arma técnicamente
+
+3. 04_modelo_base_datos.md
+   → Qué datos se guardan
+
+4. 09_reglas_negocio_indicadores.md
+   → Las reglas de TOTEM (SLA, escalamiento, checklist dinámico)
+
+5. 13_mvp_recomendado.md
+   → Qué va en la Fase 1 vs. qué va después
+
+6. 18_prompt_desarrollo_frontend.md
+   19_prompt_desarrollo_backend.md
+   20_prompt_desarrollo_basedatos.md
+   → Prompts listos para continuar el desarrollo real con IA
+
+─────────────────────────────────────────────────────────────────────────────────
+
+✅ CHECKLIST DE ESTADO
+─────────────────────────────────────────────────────────────────────────────────
+
+[✓] Stack confirmado: Next.js + Supabase + M365 Graph API
+[✓] 20 documentos de especificación completados
+[✓] Prototipo visual navegable (6 proyectos de ejemplo)
+[✓] Código Next.js 15 + TypeScript + Tailwind listo
+[✓] Identidad TOTEM aplicada (colores, tipografía)
+[✓] Proyecto listo para GitHub + Vercel
+
+[ ] Publicar en Vercel (∞ acceso gratuito)
+[ ] Feedback del equipo sobre design/UX
+[ ] Conectar Supabase (base de datos real)
+[ ] Autenticación por rol
+[ ] Motor de SLA + escalamiento
+[ ] Integración M365 (Outlook, Teams, SharePoint)
+
+─────────────────────────────────────────────────────────────────────────────────
+
+🔗 LINKS IMPORTANTES
+─────────────────────────────────────────────────────────────────────────────────
+
+Crear cuenta GitHub       →  https://github.com/signup
+Publicar en Vercel       →  https://vercel.com/sign-up
+Node.js (requisito)      →  https://nodejs.org
+Documentación Next.js    →  https://nextjs.org/docs
+Guía Tailwind CSS        →  https://tailwindcss.com/docs
+
+─────────────────────────────────────────────────────────────────────────────────
+
+🎨 VISTA PREVIA DEL PROTOTIPO
+─────────────────────────────────────────────────────────────────────────────────
+
+El código corre estas 3 vistas principales:
+
+1. DASHBOARD
+   • KPIs: Proyectos activos, cumplimiento SLA, vencidos, valor en pipeline
+   • Gráfico de distribución por fase
+   • Proyectos próximos a vencer (alertas)
+   • Tabla con todos los proyectos
+
+2. KANBAN (Vista por fase)
+   • 5 columnas: Revisión → Checklist → Reunión → Fase Ninja → Entregado
+   • Tarjetas arrastrables con SLA, soluciones, días abiertos, preguntas
+
+3. DETALLE DE PROYECTO
+   • Header con info: cliente, ejecutivo, localidades, valor
+   • 6 tabs: Resumen, Checklist, Preguntas, Reunión, Documentos, Bitácora
+   • Checklist dinámico funcional:
+     - Secciones por solución (CCTV, Control de Acceso, Aprobación Financiera)
+     - Ítems Completado/Pendiente/No aplica
+     - Barra de progreso en tiempo real
+     - Datos de ejemplo reales de TOTEM
+
+Datos de ejemplo incluyen 6 clientes reales:
+   • Country Club Quito
+   • CNT EP Matriz
+   • Grupo Almar (2 proyectos)
+   • Promarisco
+   • SENAE Guayaquil
+
+─────────────────────────────────────────────────────────────────────────────────
+
+📞 PREGUNTAS / SIGUIENTE PASO
+─────────────────────────────────────────────────────────────────────────────────
+
+¿Ya publicaste en Vercel?
+   → Sí: Comparte el link con tu equipo, recopila feedback sobre diseño/UX
+   → No: Lee PUBLICAR.md y sigue los 5 pasos
+
+¿Listos para el MVP real con base de datos?
+   → Vamos a usar los prompts 18, 19, 20 para conectar Supabase
+   → Primero necesitamos: feedback del equipo sobre el prototipo
+
+¿Necesitas cambios en el prototipo visual?
+   → El código de la interfaz está 100% en app/page.tsx
+   → Cambios fáciles: colores, textos, orden de columnas
+   → Cambios complejos (nuevas pantallas): decime qué necesitas
+
+─────────────────────────────────────────────────────────────────────────────────
+
+Creado por: Jonathan (jsaltos@totem.com.ec)
+Última actualización: 17 Junio 2026
+Hora: 19:54 UTC-5 (Guayaquil)
+
+═════════════════════════════════════════════════════════════════════════════════

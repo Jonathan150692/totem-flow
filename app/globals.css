@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply bg-[#F5F6F8] text-[#16181D];
+  }
+
+  input:focus {
+    @apply ring-2;
+    --tw-ring-color: #88AFF9;
+  }
+
+  button:focus-visible {
+    @apply outline-none ring-2 ring-offset-2;
+    --tw-ring-color: #2B3D8D;
+    --tw-ring-offset-color: white;
+  }
+}
+
+@supports (scrollbar-gutter: stable) {
+  html {
+    scrollbar-gutter: stable;
+  }
+}

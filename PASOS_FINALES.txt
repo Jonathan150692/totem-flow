@@ -1,0 +1,111 @@
+════════════════════════════════════════════════════════════════════════════════
+                   ✅ CÓDIGO LISTO — ÚLTIMOS 3 PASOS
+════════════════════════════════════════════════════════════════════════════════
+
+Tu repositorio local está inicializado. Ahora necesitas subir a GitHub.
+
+PASO 1: Crear el repositorio en GitHub (3 minutos)
+─────────────────────────────────────────────────────────────────────────────
+
+1. Ve a https://github.com/new
+2. Nombre: totem-flow
+3. Descripción: Plataforma de gestión de proyectos con checklist dinámico
+4. Visibilidad: Público (para que todos tus colaboradores lo vean sin invitación)
+5. NO marques "Initialize this repository with..."
+6. Click "Create repository"
+
+GitHub te mostrará algo así:
+┌──────────────────────────────────────────┐
+│ push an existing repository from the... │
+│ git remote add origin ...                │
+│ git branch -M main                       │
+│ git push -u origin main                  │
+└──────────────────────────────────────────┘
+
+COPIA EXACTAMENTE tu URL (será algo como):
+https://github.com/Jonathan150692/totem-flow.git
+
+
+PASO 2: Conectar tu repo local a GitHub (1 minuto)
+─────────────────────────────────────────────────────────────────────────────
+
+En la terminal de tu máquina, navega a la carpeta del proyecto:
+
+cd /ruta/a/totem-flow-public
+
+Luego ejecuta (reemplaza la URL con la que GitHub te mostró):
+
+git remote add origin https://github.com/Jonathan150692/totem-flow.git
+git push -u origin main
+
+Si te pide "Username for 'https://github.com'":
+  → Usuario: Jonathan150692
+  → Contraseña: IMPORTANTE — NO uses tu contraseña de GitHub
+              Usa un TOKEN DE ACCESO PERSONAL (PAT)
+
+Cómo crear el token:
+  1. Ve a https://github.com/settings/tokens
+  2. Click "Generate new token" → "Generate new token (classic)"
+  3. Dale un nombre: "totem-flow-deploy"
+  4. Marcas checkbox: "repo" (acceso a repositorios privados/públicos)
+  5. Click "Generate token"
+  6. COPIA el token (es una cadena larga de letras/números)
+  7. Úsalo como contraseña en el terminal
+
+Debería salir algo así:
+  Enumerating objects: 12, done.
+  Counting objects: 100% (12/12), done.
+  Delta compression using up to 4 threads
+  Compressing objects: 100% (10/10), done.
+  Writing objects: 100% (12/12), 42 KiB | 2.1 MiB/s, done.
+  Total 12 (delta 0), reused 0 (delta 0), pack-reused 0
+  To https://github.com/Jonathan150692/totem-flow.git
+   * [new branch]      main -> main
+  Branch 'main' set up to track remote branch 'main' from origin.
+
+✅ ¡Listo! Tu código está en GitHub.
+
+
+PASO 3: Publicar en Vercel (2 minutos)
+─────────────────────────────────────────────────────────────────────────────
+
+1. Ve a https://vercel.com/sign-up
+2. Click "Continue with GitHub"
+3. Autoriza que Vercel acceda a tus repos
+4. Vercel te redirige al dashboard
+5. Click "Add New..." → "Project"
+6. Click "Import Git Repository"
+7. Busca "totem-flow" y selecciónalo
+8. Vercel auto-detecta Next.js (no necesitas configurar nada)
+9. Click "Deploy"
+
+Espera 60-90 segundos...
+
+✅ ¡TU APLICACIÓN ESTÁ EN LÍNEA!
+
+Vercel te dará una URL como:
+  https://totem-flow.vercel.app
+
+O si usas un dominio custom:
+  https://tu-dominio.com
+
+
+════════════════════════════════════════════════════════════════════════════════
+                              ¡LISTO!
+════════════════════════════════════════════════════════════════════════════════
+
+Después de publicar:
+
+🔗 Repo GitHub:        https://github.com/Jonathan150692/totem-flow
+🔗 App en Vercel:      https://totem-flow.vercel.app
+📢 Comparte con equipo: "Entra aquí: https://totem-flow.vercel.app"
+
+Cada vez que hagas cambios:
+  git add .
+  git commit -m "Descripción del cambio"
+  git push origin main
+  → Vercel auto-redeploya en 30 segundos
+
+════════════════════════════════════════════════════════════════════════════════
+
+¿Preguntas o problemas? Contáctame.
