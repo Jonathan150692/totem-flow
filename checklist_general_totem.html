@@ -855,6 +855,7 @@ footer .mk{height:28px;opacity:.9;margin-bottom:8px}
 
   <div class="actions">
     <button class="btn reset" onclick="resetChecks()">Desmarcar todo</button>
+    <button class="btn summary" onclick="generateExecutiveSummary()" style="background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 4px 12px rgba(5,150,105,.25)">📊 Generar Resumen Ejecutivo</button>
     <button class="btn print" onclick="printWithVersion()">Imprimir / Guardar PDF</button>
   </div>
 
@@ -1181,6 +1182,152 @@ footer .mk{height:28px;opacity:.9;margin-bottom:8px}
       // Usuario canceló
       if(sigSection) sigSection.style.display='none';
     }
+  }
+
+  function generateExecutiveSummary(){
+    var projInput=document.getElementById('proj-name');
+    var clientInput=document.getElementById('proj-name').closest('.ficha').querySelector('.cell input');
+    var respInput=document.getElementById('resp-totem');
+    var proyecto=(projInput&&projInput.value.trim())||'BORRADOR';
+    var clientName=(clientInput&&clientInput.value.trim())||'___________________';
+    var responsable=(respInput&&respInput.value.trim())||'Sin especificar';
+
+    // Validar campos obligatorios
+    var required=document.querySelectorAll('.ficha input[required]');
+    var allValid=true;
+    required.forEach(function(inp){
+      if(!inp.value.trim()){ inp.style.borderBottomColor='#dc2626'; allValid=false; }
+      else{ inp.style.borderBottomColor=''; }
+    });
+    if(!allValid){ alert('Por favor completa todos los campos requeridos'); return; }
+
+    // Recopilar datos seleccionados
+    var lineasSeleccionadas=[];
+    var equipamiento={cctv:0,combustible:0,redes:0};
+    var totemPass='';
+    var slaData='';
+
+    // Líneas de negocio incluidas
+    document.querySelectorAll('.line[data-state="inc"]').forEach(function(line){
+      var nombre=line.querySelector('.ln-name').textContent;
+      lineasSeleccionadas.push(nombre);
+    });
+
+    // Equipamiento marcado
+    var checkedItems=document.querySelectorAll('ul.ck li.checked');
+    checkedItems.forEach(function(item){
+      var text=item.querySelector('.it-main').textContent;
+      if(text.includes('CCTV')) equipamiento.cctv++;
+      if(text.includes('Combustible')) equipamiento.combustible++;
+      if(text.includes('Red')) equipamiento.redes++;
+    });
+
+    // TOTEM PASS seleccionado
+    var tpOptions=document.querySelectorAll('.tp-option.on');
+    if(tpOptions.length>0){
+      var tpTexts=[];
+      tpOptions.forEach(function(opt){ tpTexts.push(opt.textContent.trim()); });
+      totemPass=tpTexts.join(', ');
+    }
+
+    // Generar contenido HTML del resumen
+    var htmlContent='<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>Resumen Ejecutivo</title><style>body{font-family:Arial,sans-serif;margin:0;padding:20px;background:#f5f5f5;color:#333}';
+    htmlContent+='.container{background:#fff;max-width:800px;margin:0 auto;padding:40px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}';
+    htmlContent+='.header{border-bottom:3px solid #1e3a8a;padding-bottom:20px;margin-bottom:30px}';
+    htmlContent+='.header img{max-width:150px;margin-bottom:15px}';
+    htmlContent+='.header h1{margin:0;color:#1e3a8a;font-size:28px}';
+    htmlContent+='.header p{margin:5px 0;color:#666}';
+    htmlContent+='.section{margin-bottom:30px}';
+    htmlContent+='.section h2{color:#1e3a8a;border-left:4px solid #06b6d4;padding-left:12px;font-size:18px}';
+    htmlContent+='.section p{line-height:1.6;margin:10px 0}';
+    htmlContent+='.highlight{background:#f0f9ff;border-left:4px solid #06b6d4;padding:12px;margin:10px 0;border-radius:4px}';
+    htmlContent+='.list-item{margin:8px 0;padding-left:20px}';
+    htmlContent+='.footer{border-top:1px solid #eee;margin-top:40px;padding-top:20px;text-align:center;color:#999;font-size:12px}';
+    htmlContent+='</style></head><body>';
+    htmlContent+='<div class="container">';
+
+    // Header
+    htmlContent+='<div class="header">';
+    htmlContent+='<h1>Resumen Ejecutivo</h1>';
+    htmlContent+='<p><strong>Proyecto:</strong> '+proyecto+'</p>';
+    htmlContent+='<p><strong>Cliente:</strong> '+clientName+'</p>';
+    htmlContent+='<p><strong>Fecha:</strong> '+new Date().toLocaleDateString('es-ES')+'</p>';
+    htmlContent+='</div>';
+
+    // Descripción General
+    htmlContent+='<div class="section">';
+    htmlContent+='<h2>📋 Descripción General</h2>';
+    htmlContent+='<div class="highlight">';
+    htmlContent+='<p>Se propone una solución integral de seguridad electrónica que incluye los siguientes servicios principales:</p>';
+    htmlContent+='</div>';
+    lineasSeleccionadas.forEach(function(linea){
+      htmlContent+='<div class="list-item">✓ '+linea+'</div>';
+    });
+    htmlContent+='</div>';
+
+    // Componentes Propuestos
+    htmlContent+='<div class="section">';
+    htmlContent+='<h2>🎯 Componentes Propuestos</h2>';
+    if(equipamiento.cctv>0) htmlContent+='<div class="list-item"><strong>Videovigilancia CCTV:</strong> '+equipamiento.cctv+' sistemas/equipos</div>';
+    if(equipamiento.combustible>0) htmlContent+='<div class="list-item"><strong>Monitoreo de Combustible:</strong> '+equipamiento.combustible+' equipos</div>';
+    if(equipamiento.redes>0) htmlContent+='<div class="list-item"><strong>Infraestructura de Red:</strong> '+equipamiento.redes+' componentes</div>';
+    if(equipamiento.cctv+equipamiento.combustible+equipamiento.redes===0){
+      htmlContent+='<p style="color:#666"><em>Sin equipos especificados aún</em></p>';
+    }
+    htmlContent+='</div>';
+
+    // Control de Acceso
+    if(totemPass){
+      htmlContent+='<div class="section">';
+      htmlContent+='<h2>🔐 Control de Acceso (TOTEM PASS)</h2>';
+      htmlContent+='<div class="highlight">';
+      htmlContent+='<p><strong>Modalidades seleccionadas:</strong> '+totemPass+'</p>';
+      htmlContent+='</div>';
+      htmlContent+='</div>';
+    }
+
+    // Beneficios
+    htmlContent+='<div class="section">';
+    htmlContent+='<h2>💡 Beneficios Principales</h2>';
+    htmlContent+='<div class="list-item">• Protección integral 24/7 de sus instalaciones</div>';
+    htmlContent+='<div class="list-item">• Monitoreo centralizado y control remoto</div>';
+    htmlContent+='<div class="list-item">• Alertas inmediatas ante eventos de seguridad</div>';
+    htmlContent+='<div class="list-item">• Reportería detallada y trazabilidad de eventos</div>';
+    htmlContent+='<div class="list-item">• Soporte técnico especializado disponible</div>';
+    htmlContent+='</div>';
+
+    // Próximos Pasos
+    htmlContent+='<div class="section">';
+    htmlContent+='<h2>📅 Próximos Pasos</h2>';
+    htmlContent+='<div class="highlight">';
+    htmlContent+='<p>Para proceder con esta propuesta, le invitamos a:</p>';
+    htmlContent+='<div class="list-item">1. Revisar en detalle esta propuesta técnica</div>';
+    htmlContent+='<div class="list-item">2. Coordinar una reunión de presentación con nuestro equipo</div>';
+    htmlContent+='<div class="list-item">3. Solicitar referencias de proyectos similares</div>';
+    htmlContent+='<div class="list-item">4. Formalizar la solicitud de servicio</div>';
+    htmlContent+='</div>';
+    htmlContent+='</div>';
+
+    // Footer
+    htmlContent+='<div class="footer">';
+    htmlContent+='<p>TOTEM Seguridad Electrónica | '+new Date().toLocaleDateString('es-ES')+' | Resumen Ejecutivo</p>';
+    htmlContent+='<p>Responsable: '+responsable+'</p>';
+    htmlContent+='</div>';
+
+    htmlContent+='</div></body></html>';
+
+    // Crear blob y descargar
+    var blob=new Blob([htmlContent],{type:'text/html;charset=utf-8'});
+    var link=document.createElement('a');
+    link.href=URL.createObjectURL(blob);
+    link.download=proyecto+'_ResumenEjecutivo_'+new Date().toISOString().split('T')[0]+'.html';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // También generar versión para imprimir como PDF
+    alert('✅ Resumen ejecutivo generado.\n\nSe abrirá una ventana para que puedas:\n1. Revisar el contenido\n2. Ajustar si es necesario\n3. Guardar como PDF (Ctrl+P → Guardar como PDF)');
+    window.open('about:blank').document.write(htmlContent);
   }
 </script>
 </body>
