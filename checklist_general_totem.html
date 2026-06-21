@@ -1201,133 +1201,285 @@ footer .mk{height:28px;opacity:.9;margin-bottom:8px}
     });
     if(!allValid){ alert('Por favor completa todos los campos requeridos'); return; }
 
-    // Recopilar datos seleccionados
-    var lineasSeleccionadas=[];
-    var equipamiento={cctv:0,combustible:0,redes:0};
-    var totemPass='';
-    var slaData='';
+    // === ANÁLISIS COMPLETO DE DATOS ===
+    var analisis={
+      lineasIncluidas:[],
+      lineasFuturas:[],
+      lineasNoAplica:[],
+      equipamientoTotal:0,
+      equipamientoPorTipo:{},
+      serviciosIntegrados:[],
+      totemPassInfo:'',
+      arquitectura:'',
+      analytics:'',
+      slaInfo:'',
+      observaciones:''
+    };
 
-    // Líneas de negocio incluidas
-    document.querySelectorAll('.line[data-state="inc"]').forEach(function(line){
+    // Analizar líneas de negocio
+    document.querySelectorAll('.line').forEach(function(line){
       var nombre=line.querySelector('.ln-name').textContent;
-      lineasSeleccionadas.push(nombre);
+      var estado=line.getAttribute('data-state');
+      if(estado==='inc') analisis.lineasIncluidas.push(nombre);
+      else if(estado==='fut') analisis.lineasFuturas.push(nombre);
+      else analisis.lineasNoAplica.push(nombre);
     });
 
-    // Equipamiento marcado
-    var checkedItems=document.querySelectorAll('ul.ck li.checked');
-    checkedItems.forEach(function(item){
-      var text=item.querySelector('.it-main').textContent;
-      if(text.includes('CCTV')) equipamiento.cctv++;
-      if(text.includes('Combustible')) equipamiento.combustible++;
-      if(text.includes('Red')) equipamiento.redes++;
+    // Contar equipamiento por tipo
+    document.querySelectorAll('ul.ck li.checked').forEach(function(item){
+      var text=item.querySelector('.it-main').textContent.trim();
+      var qty=item.querySelector('.qty input')?item.querySelector('.qty input').value||1:1;
+      analisis.equipamientoTotal+=parseInt(qty);
+
+      if(text.includes('Cámara')||text.includes('CCTV')) analisis.equipamientoPorTipo['CCTV']=(analisis.equipamientoPorTipo['CCTV']||0)+parseInt(qty);
+      if(text.includes('DVR')||text.includes('NVR')) analisis.equipamientoPorTipo['Grabadores']=(analisis.equipamientoPorTipo['Grabadores']||0)+parseInt(qty);
+      if(text.includes('Monitor')) analisis.equipamientoPorTipo['Monitores']=(analisis.equipamientoPorTipo['Monitores']||0)+parseInt(qty);
+      if(text.includes('Sensor')||text.includes('Detector')) analisis.equipamientoPorTipo['Sensores']=(analisis.equipamientoPorTipo['Sensores']||0)+parseInt(qty);
+      if(text.includes('Combustible')) analisis.equipamientoPorTipo['Monitoreo Combustible']=(analisis.equipamientoPorTipo['Monitoreo Combustible']||0)+parseInt(qty);
     });
 
-    // TOTEM PASS seleccionado
-    var tpOptions=document.querySelectorAll('.tp-option.on');
-    if(tpOptions.length>0){
-      var tpTexts=[];
-      tpOptions.forEach(function(opt){ tpTexts.push(opt.textContent.trim()); });
-      totemPass=tpTexts.join(', ');
-    }
-
-    // Generar contenido HTML del resumen
-    var htmlContent='<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>Resumen Ejecutivo</title><style>body{font-family:Arial,sans-serif;margin:0;padding:20px;background:#f5f5f5;color:#333}';
-    htmlContent+='.container{background:#fff;max-width:800px;margin:0 auto;padding:40px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}';
-    htmlContent+='.header{border-bottom:3px solid #1e3a8a;padding-bottom:20px;margin-bottom:30px}';
-    htmlContent+='.header img{max-width:150px;margin-bottom:15px}';
-    htmlContent+='.header h1{margin:0;color:#1e3a8a;font-size:28px}';
-    htmlContent+='.header p{margin:5px 0;color:#666}';
-    htmlContent+='.section{margin-bottom:30px}';
-    htmlContent+='.section h2{color:#1e3a8a;border-left:4px solid #06b6d4;padding-left:12px;font-size:18px}';
-    htmlContent+='.section p{line-height:1.6;margin:10px 0}';
-    htmlContent+='.highlight{background:#f0f9ff;border-left:4px solid #06b6d4;padding:12px;margin:10px 0;border-radius:4px}';
-    htmlContent+='.list-item{margin:8px 0;padding-left:20px}';
-    htmlContent+='.footer{border-top:1px solid #eee;margin-top:40px;padding-top:20px;text-align:center;color:#999;font-size:12px}';
-    htmlContent+='</style></head><body>';
-    htmlContent+='<div class="container">';
-
-    // Header
-    htmlContent+='<div class="header">';
-    htmlContent+='<h1>Resumen Ejecutivo</h1>';
-    htmlContent+='<p><strong>Proyecto:</strong> '+proyecto+'</p>';
-    htmlContent+='<p><strong>Cliente:</strong> '+clientName+'</p>';
-    htmlContent+='<p><strong>Fecha:</strong> '+new Date().toLocaleDateString('es-ES')+'</p>';
-    htmlContent+='</div>';
-
-    // Descripción General
-    htmlContent+='<div class="section">';
-    htmlContent+='<h2>📋 Descripción General</h2>';
-    htmlContent+='<div class="highlight">';
-    htmlContent+='<p>Se propone una solución integral de seguridad electrónica que incluye los siguientes servicios principales:</p>';
-    htmlContent+='</div>';
-    lineasSeleccionadas.forEach(function(linea){
-      htmlContent+='<div class="list-item">✓ '+linea+'</div>';
+    // Servicios integrados
+    document.querySelectorAll('ul.ck li.checked').forEach(function(item){
+      var text=item.querySelector('.it-main').textContent.trim();
+      if(text.includes('Integración')||text.includes('Sistema')){
+        if(analisis.serviciosIntegrados.indexOf(text)<0) analisis.serviciosIntegrados.push(text);
+      }
     });
-    htmlContent+='</div>';
 
-    // Componentes Propuestos
-    htmlContent+='<div class="section">';
-    htmlContent+='<h2>🎯 Componentes Propuestos</h2>';
-    if(equipamiento.cctv>0) htmlContent+='<div class="list-item"><strong>Videovigilancia CCTV:</strong> '+equipamiento.cctv+' sistemas/equipos</div>';
-    if(equipamiento.combustible>0) htmlContent+='<div class="list-item"><strong>Monitoreo de Combustible:</strong> '+equipamiento.combustible+' equipos</div>';
-    if(equipamiento.redes>0) htmlContent+='<div class="list-item"><strong>Infraestructura de Red:</strong> '+equipamiento.redes+' componentes</div>';
-    if(equipamiento.cctv+equipamiento.combustible+equipamiento.redes===0){
-      htmlContent+='<p style="color:#666"><em>Sin equipos especificados aún</em></p>';
-    }
-    htmlContent+='</div>';
-
-    // Control de Acceso
-    if(totemPass){
-      htmlContent+='<div class="section">';
-      htmlContent+='<h2>🔐 Control de Acceso (TOTEM PASS)</h2>';
-      htmlContent+='<div class="highlight">';
-      htmlContent+='<p><strong>Modalidades seleccionadas:</strong> '+totemPass+'</p>';
-      htmlContent+='</div>';
-      htmlContent+='</div>';
+    // TOTEM PASS
+    var tpOpciones=[];
+    document.querySelectorAll('.tp-option.on').forEach(function(opt){
+      tpOpciones.push(opt.textContent.trim());
+    });
+    if(tpOpciones.length>0){
+      analisis.totemPassInfo=tpOpciones.join(', ');
+      var tpModalities=[];
+      document.querySelectorAll('.modal-btn.on').forEach(function(btn){
+        tpModalities.push(btn.textContent.trim());
+      });
+      if(tpModalities.length>0) analisis.totemPassInfo+=' ('+tpModalities.join(', ')+')';
     }
 
-    // Beneficios
-    htmlContent+='<div class="section">';
-    htmlContent+='<h2>💡 Beneficios Principales</h2>';
-    htmlContent+='<div class="list-item">• Protección integral 24/7 de sus instalaciones</div>';
-    htmlContent+='<div class="list-item">• Monitoreo centralizado y control remoto</div>';
-    htmlContent+='<div class="list-item">• Alertas inmediatas ante eventos de seguridad</div>';
-    htmlContent+='<div class="list-item">• Reportería detallada y trazabilidad de eventos</div>';
-    htmlContent+='<div class="list-item">• Soporte técnico especializado disponible</div>';
-    htmlContent+='</div>';
+    // Arquitectura seleccionada
+    var optSelected=document.querySelector('.opt[data-on="1"] .ot');
+    if(optSelected) analisis.arquitectura=optSelected.textContent;
 
-    // Próximos Pasos
-    htmlContent+='<div class="section">';
-    htmlContent+='<h2>📅 Próximos Pasos</h2>';
-    htmlContent+='<div class="highlight">';
-    htmlContent+='<p>Para proceder con esta propuesta, le invitamos a:</p>';
-    htmlContent+='<div class="list-item">1. Revisar en detalle esta propuesta técnica</div>';
-    htmlContent+='<div class="list-item">2. Coordinar una reunión de presentación con nuestro equipo</div>';
-    htmlContent+='<div class="list-item">3. Solicitar referencias de proyectos similares</div>';
-    htmlContent+='<div class="list-item">4. Formalizar la solicitud de servicio</div>';
-    htmlContent+='</div>';
-    htmlContent+='</div>';
+    // Analytics
+    var analyticsOn=document.querySelectorAll('.analytics-card.on');
+    if(analyticsOn.length>0){
+      var names=[];
+      analyticsOn.forEach(function(card){ names.push(card.textContent.substring(0,30).trim()); });
+      analisis.analytics=names.join(', ');
+    }
 
-    // Footer
-    htmlContent+='<div class="footer">';
-    htmlContent+='<p>TOTEM Seguridad Electrónica | '+new Date().toLocaleDateString('es-ES')+' | Resumen Ejecutivo</p>';
-    htmlContent+='<p>Responsable: '+responsable+'</p>';
-    htmlContent+='</div>';
+    // SLA
+    var slaInfo=[];
+    document.querySelectorAll('.sla-row').forEach(function(row){
+      var cells=row.querySelectorAll('select');
+      if(cells.length>0){
+        var val=cells[0].value;
+        if(val && val!=='NO APLICA') slaInfo.push(val);
+      }
+    });
+    if(slaInfo.length>0) analisis.slaInfo=slaInfo.join(' | ');
 
-    htmlContent+='</div></body></html>';
+    // Observaciones TOTEM PASS
+    var obsInput=document.querySelector('[placeholder*="Observaciones"]');
+    if(obsInput && obsInput.value) analisis.observaciones=obsInput.value.trim();
 
-    // Crear blob y descargar
-    var blob=new Blob([htmlContent],{type:'text/html;charset=utf-8'});
-    var link=document.createElement('a');
-    link.href=URL.createObjectURL(blob);
-    link.download=proyecto+'_ResumenEjecutivo_'+new Date().toISOString().split('T')[0]+'.html';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // === GENERAR HTML PROFESIONAL ===
+    var html='<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>Resumen Ejecutivo - '+proyecto+'</title>';
+    html+='<style>';
+    html+='*{margin:0;padding:0;box-sizing:border-box}';
+    html+='body{font-family:"Segoe UI",Arial,sans-serif;line-height:1.6;color:#333;background:#f5f5f5}';
+    html+='.document{background:#fff;max-width:900px;margin:20px auto;padding:60px;box-shadow:0 0 20px rgba(0,0,0,0.1)}';
+    html+='.header{text-align:center;border-bottom:3px solid #1e3a8a;padding-bottom:30px;margin-bottom:40px}';
+    html+='.header h1{color:#1e3a8a;font-size:36px;margin:20px 0 10px}';
+    html+='.header .subtitle{color:#06b6d4;font-size:14px;text-transform:uppercase;letter-spacing:2px;font-weight:bold}';
+    html+='.header .meta{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;font-size:14px;color:#666}';
+    html+='.header .meta-item strong{color:#1e3a8a}';
+    html+='.section{margin-bottom:35px;page-break-inside:avoid}';
+    html+='.section h2{color:#1e3a8a;border-left:5px solid #06b6d4;padding-left:15px;margin-bottom:15px;font-size:22px}';
+    html+='.section-content{padding-left:20px}';
+    html+='.highlight-box{background:linear-gradient(135deg,rgba(30,58,138,.05),rgba(6,182,212,.05));border-left:4px solid #06b6d4;padding:15px;margin:15px 0;border-radius:4px}';
+    html+='.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}';
+    html+='.card{background:#f9fafb;border:1px solid #e5e7eb;padding:15px;border-radius:6px}';
+    html+='.card strong{color:#1e3a8a}';
+    html+='.card-value{font-size:24px;color:#06b6d4;font-weight:bold;margin:10px 0}';
+    html+='.list{margin:10px 0 10px 20px}';
+    html+='.list-item{margin:8px 0;padding-left:20px;position:relative}';
+    html+='.list-item:before{content:"✓";position:absolute;left:0;color:#059669;font-weight:bold}';
+    html+='.badge{display:inline-block;background:#1e3a8a;color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;margin:2px 4px 2px 0;font-weight:600}';
+    html+='.table{width:100%;border-collapse:collapse;margin:15px 0}';
+    html+='.table th{background:#1e3a8a;color:#fff;padding:12px;text-align:left}';
+    html+='.table td{padding:10px 12px;border-bottom:1px solid #e5e7eb}';
+    html+='.table tr:nth-child(even){background:#f9fafb}';
+    html+='.benefits{background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff;padding:25px;border-radius:8px;margin:20px 0}';
+    html+='.benefits h3{margin-bottom:15px}';
+    html+='.benefits-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}';
+    html+='.benefits-item{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.2)}';
+    html+='.footer{border-top:2px solid #e5e7eb;margin-top:40px;padding-top:20px;text-align:center;font-size:12px;color:#666}';
+    html+='.footer-line{margin:8px 0}';
+    html+='@media print{body{background:white}.document{margin:0;padding:0;box-shadow:none;max-width:100%}}';
+    html+='</style></head><body>';
 
-    // También generar versión para imprimir como PDF
-    alert('✅ Resumen ejecutivo generado.\n\nSe abrirá una ventana para que puedas:\n1. Revisar el contenido\n2. Ajustar si es necesario\n3. Guardar como PDF (Ctrl+P → Guardar como PDF)');
-    window.open('about:blank').document.write(htmlContent);
+    html+='<div class="document">';
+
+    // HEADER
+    html+='<div class="header">';
+    html+='<div class="subtitle">Resumen Ejecutivo</div>';
+    html+='<h1>'+proyecto+'</h1>';
+    html+='<div class="meta">';
+    html+='<div class="meta-item"><strong>Cliente:</strong> '+clientName+'</div>';
+    html+='<div class="meta-item"><strong>Responsable:</strong> '+responsable+'</div>';
+    html+='<div class="meta-item"><strong>Fecha:</strong> '+new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'})+'</div>';
+    html+='<div class="meta-item"><strong>Documento:</strong> Propuesta Integral de Seguridad</div>';
+    html+='</div>';
+    html+='</div>';
+
+    // INTRODUCCIÓN
+    html+='<div class="section">';
+    html+='<h2>📋 Propuesta de Solución</h2>';
+    html+='<div class="section-content">';
+    html+='<p>TOTEM Seguridad Electrónica presenta una propuesta integral de soluciones de seguridad diseñada específicamente para las necesidades de '+clientName+'. La solución propuesta incluye un conjunto completo de servicios y tecnologías para garantizar la protección y monitoreo de sus instalaciones.</p>';
+    html+='<div class="highlight-box"><strong>Servicios Principales Incluidos:</strong>';
+    if(analisis.lineasIncluidas.length>0){
+      html+='<div class="list">';
+      analisis.lineasIncluidas.forEach(function(linea){
+        html+='<div class="list-item">'+linea+'</div>';
+      });
+      html+='</div>';
+    }else{
+      html+='<p style="color:#999"><em>No hay servicios seleccionados como INCLUIDOS</em></p>';
+    }
+    if(analisis.lineasFuturas.length>0){
+      html+='<p style="margin-top:15px;color:#b07d00"><strong>Fases Futuras:</strong> '+analisis.lineasFuturas.join(', ')+'</p>';
+    }
+    html+='</div>';
+    html+='</div>';
+    html+='</div>';
+
+    // ANÁLISIS DE COMPONENTES
+    html+='<div class="section">';
+    html+='<h2>🎯 Componentes y Equipamiento</h2>';
+    html+='<div class="section-content">';
+    if(analisis.equipamientoTotal>0){
+      html+='<div class="grid-2">';
+      html+='<div class="card"><strong>Total de Equipos</strong><div class="card-value">'+analisis.equipamientoTotal+'</div></div>';
+      html+='<div class="card"><strong>Categorías</strong><div class="card-value">'+Object.keys(analisis.equipamientoPorTipo).length+'</div></div>';
+      html+='</div>';
+      html+='<h3 style="margin-top:20px;color:#1e3a8a">Desglose por Tipo:</h3>';
+      html+='<table class="table"><thead><tr><th>Tipo de Equipo</th><th>Cantidad</th></tr></thead><tbody>';
+      for(var tipo in analisis.equipamientoPorTipo){
+        html+='<tr><td>'+tipo+'</td><td>'+analisis.equipamientoPorTipo[tipo]+'</td></tr>';
+      }
+      html+='</tbody></table>';
+    }else{
+      html+='<p style="color:#999;font-style:italic">No se ha seleccionado equipamiento específico</p>';
+    }
+    html+='</div>';
+    html+='</div>';
+
+    // ARQUITECTURA
+    if(analisis.arquitectura){
+      html+='<div class="section">';
+      html+='<h2>🏗️ Arquitectura del Sistema</h2>';
+      html+='<div class="section-content">';
+      html+='<div class="highlight-box">';
+      html+='<strong>Tipología Seleccionada:</strong> '+analisis.arquitectura;
+      html+='<p style="margin-top:10px;font-size:14px;color:#666">Esta arquitectura garantiza '+analisis.arquitectura.includes('IP')?'conectividad moderna y escalabilidad':'compatibilidad con infraestructura existente'+'.</p>';
+      html+='</div>';
+      html+='</div>';
+      html+='</div>';
+    }
+
+    // TOTEM PASS
+    if(analisis.totemPassInfo){
+      html+='<div class="section">';
+      html+='<h2>🔐 Control de Acceso - TOTEM PASS</h2>';
+      html+='<div class="section-content">';
+      html+='<div class="highlight-box">';
+      html+='<p><strong>Modalidades de Acceso Incluidas:</strong></p>';
+      analisis.totemPassInfo.split(',').forEach(function(mod){
+        html+='<div class="badge">'+mod.trim()+'</div>';
+      });
+      if(analisis.observaciones){
+        html+='<p style="margin-top:15px"><strong>Observaciones:</strong><br>'+analisis.observaciones+'</p>';
+      }
+      html+='</div>';
+      html+='</div>';
+      html+='</div>';
+    }
+
+    // SERVICIOS DE MONITOREO
+    if(analisis.slaInfo){
+      html+='<div class="section">';
+      html+='<h2>📊 Niveles de Servicio (SLA)</h2>';
+      html+='<div class="section-content">';
+      html+='<div class="highlight-box">';
+      html+='<p>'+analisis.slaInfo+'</p>';
+      html+='</div>';
+      html+='</div>';
+      html+='</div>';
+    }
+
+    // VIDEO ANALYTICS
+    if(analisis.analytics){
+      html+='<div class="section">';
+      html+='<h2>🤖 Video Analytics - Inteligencia Artificial</h2>';
+      html+='<div class="section-content">';
+      html+='<p>Se incluyen las siguientes capacidades de análisis inteligente:</p>';
+      html+='<div class="list">';
+      analisis.analytics.split(',').forEach(function(a){
+        html+='<div class="list-item">'+a.trim()+'</div>';
+      });
+      html+='</div>';
+      html+='</div>';
+      html+='</div>';
+    }
+
+    // BENEFICIOS
+    html+='<div class="benefits">';
+    html+='<h3>✨ Beneficios de la Solución Propuesta</h3>';
+    html+='<div class="benefits-list">';
+    html+='<div class="benefits-item">✓ Protección integral 24/7</div>';
+    html+='<div class="benefits-item">✓ Monitoreo centralizado</div>';
+    html+='<div class="benefits-item">✓ Alertas en tiempo real</div>';
+    html+='<div class="benefits-item">✓ Análisis inteligente</div>';
+    html+='<div class="benefits-item">✓ Reportería detallada</div>';
+    html+='<div class="benefits-item">✓ Soporte técnico 24/7</div>';
+    html+='</div>';
+    html+='</div>';
+
+    // PRÓXIMOS PASOS
+    html+='<div class="section">';
+    html+='<h2>📅 Próximos Pasos</h2>';
+    html+='<div class="section-content">';
+    html+='<div class="list">';
+    html+='<div class="list-item"><strong>Revisión:</strong> Analice esta propuesta en detalle con su equipo</div>';
+    html+='<div class="list-item"><strong>Presentación:</strong> Coordine una reunión con nuestro equipo de soluciones</div>';
+    html+='<div class="list-item"><strong>Validación:</strong> Realizaremos un relevamiento técnico en sus instalaciones</div>';
+    html+='<div class="list-item"><strong>Cotización:</strong> Recibirá una propuesta económica detallada</div>';
+    html+='<div class="list-item"><strong>Implementación:</strong> Procederemos con la instalación y puesta en marcha</div>';
+    html+='</div>';
+    html+='</div>';
+    html+='</div>';
+
+    // FOOTER
+    html+='<div class="footer">';
+    html+='<div class="footer-line"><strong>TOTEM Seguridad Electrónica</strong></div>';
+    html+='<div class="footer-line">Responsable: '+responsable+' | Fecha: '+new Date().toLocaleDateString('es-ES')+' | Documento: '+proyecto+'</div>';
+    html+='<div class="footer-line" style="margin-top:15px;padding-top:15px;border-top:1px solid #ddd;font-size:11px">Este documento contiene información confidencial y está destinado únicamente al cliente mencionado.</div>';
+    html+='</div>';
+
+    html+='</div></body></html>';
+
+    // ABRIR EN NUEVA VENTANA
+    var newWindow=window.open('','_blank');
+    newWindow.document.write(html);
+    newWindow.document.close();
+
+    alert('✅ RESUMEN EJECUTIVO GENERADO\n\nEl documento se ha abierto en una nueva ventana con:\n\n✓ Análisis completo de todos los datos ingresados\n✓ Desglose de equipamiento\n✓ Componentes y servicios seleccionados\n✓ Beneficios de la solución\n✓ Próximos pasos claros\n\nPuedes:\n→ Imprimir (Ctrl+P)\n→ Guardar como PDF\n→ Enviar directamente al cliente');
   }
 </script>
 </body>
