@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist General de Solución Ofertada — Totem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --jordy:#88AFF9; --marian:#2B3D8D; --black:#000000;
+  --platinum:#DBDFE2; --french:#BDBBBE; --champagne:#DAC9BF;
+  --ink:#0e1320; --muted:#5b6275; --line:#e3e6ec;
+  --ok:#1f9d57; --okbg:#e8f6ee; --no:#c0392b; --nobg:#fbecea;
+  --fut:#b07d00; --futbg:#fdf4e0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Archivo',Arial,sans-serif;color:var(--ink);background:#eef0f4;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 80px}
+
+.hero{background:linear-gradient(135deg,#0a0f1d 0%,var(--marian) 62%,#34489c 100%);border-radius:20px;padding:38px 40px;color:#fff;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(136,175,249,.35),transparent 70%);pointer-events:none}
+.hero img.logo{height:42px;display:block;margin-bottom:22px}
+.hero .kicker{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--jordy);font-weight:700}
+.hero h1{font-size:28px;font-weight:800;line-height:1.12;margin-top:8px;max-width:720px}
+.hero p.sub{color:#cfd6ea;margin-top:10px;font-size:14.5px;max-width:680px}
+
+.ficha{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-radius:14px;overflow:hidden;margin-top:18px;border:1px solid var(--line)}
+.ficha .cell{background:#fff;padding:13px 16px}
+.ficha .lbl{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.ficha .cell input{border:none;outline:none;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink);width:100%;margin-top:4px;background:transparent;border-bottom:1px dashed var(--line);padding-bottom:2px}
+.ficha .cell input:focus{border-bottom-color:var(--jordy)}
+.ficha .cell input::placeholder{color:var(--french);font-weight:500}
+.ficha .cell input[required]:invalid{border-bottom-color:var(--no)}
+.ficha .cell input[readonly]{background:#f5f5f5;cursor:not-allowed}
+
+section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 28px;margin-top:20px}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.sec-num{background:var(--marian);color:#fff;font-weight:800;font-size:13px;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex:none}
+.sec-head h2{font-size:19px;font-weight:800}
+.sec-desc{color:var(--muted);font-size:13.5px;margin:2px 0 18px 42px}
+
+/* LINEAS DE NEGOCIO */
+.lines{display:flex;flex-direction:column;gap:12px}
+.line{border:1px solid var(--line);border-radius:13px;padding:15px 16px;display:flex;gap:13px;align-items:center;transition:.15s;flex-wrap:wrap}
+.line .ico{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;flex:none;font-size:19px;background:#eef0f4;color:var(--marian)}
+.line .ln-body{flex:1;min-width:200px}
+.line .ln-name{font-weight:700;font-size:15px}
+.line .ln-note{font-size:12.5px;color:var(--muted);margin-top:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;flex:none}
+.seg button{border:none;background:#fff;font-family:inherit;font-size:11.5px;font-weight:700;padding:8px 12px;cursor:pointer;color:var(--muted);transition:.12s;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:none}
+.seg button:hover{background:#f3f6fc}
+.line[data-state="inc"]{border-color:#bfe6cd;background:linear-gradient(180deg,#fff,var(--okbg))}
+.line[data-state="inc"] .ico{background:var(--okbg);color:var(--ok)}
+.line[data-state="inc"] .seg button.s-inc{background:var(--ok);color:#fff}
+.line[data-state="fut"]{border-color:#f0dfae;background:linear-gradient(180deg,#fff,var(--futbg))}
+.line[data-state="fut"] .ico{background:var(--futbg);color:var(--fut)}
+.line[data-state="fut"] .seg button.s-fut{background:var(--fut);color:#fff}
+.line[data-state="no"]{background:#fafbfc}
+.line[data-state="no"] .seg button.s-no{background:var(--french);color:#fff}
+
+.group-title{display:flex;align-items:center;gap:10px;margin:22px 0 10px;font-weight:800;font-size:14px;color:var(--marian);flex-wrap:wrap}
+.group-title::before{content:"";width:5px;height:18px;background:var(--jordy);border-radius:3px}
+.cad{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:#eef4ff;color:var(--marian);border:1px solid #cfe0fb;border-radius:6px;padding:2px 8px}
+
+ul.ck{list-style:none;display:flex;flex-direction:column;gap:2px}
+ul.ck li{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:9px;cursor:pointer;transition:background .12s}
+ul.ck li:hover{background:#f6f8fb}
+.box{width:21px;height:21px;border-radius:6px;border:2px solid var(--marian);flex:none;margin-top:1px;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:900;transition:.12s}
+ul.ck li.checked .box{background:var(--marian)}
+.box::after{content:"\2713";opacity:0;transform:scale(.4);transition:.12s}
+ul.ck li.checked .box::after{opacity:1;transform:scale(1)}
+.it-main{font-size:14px;font-weight:600;color:var(--ink)}
+.it-main[contenteditable]{outline:none;border-radius:4px;padding:1px 3px;margin:-1px -3px}
+.it-main[contenteditable]:focus{background:#eef4ff}
+.it-sub{font-size:12.5px;color:var(--muted);margin-top:1px}
+.it-sub[contenteditable]:focus{outline:none;background:#eef4ff;border-radius:4px}
+.qty input{width:44px;text-align:center;border:1px solid var(--line);border-radius:6px;font-family:inherit;font-weight:800;font-size:12px;color:var(--marian);padding:4px 2px;outline:none}
+.qty input:focus{border-color:var(--jordy)}
+.dl{font-size:9.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ok);background:var(--okbg);border-radius:6px;padding:2px 7px;flex:none;margin-top:2px}
+.addrow{margin:8px 0 0 33px;background:none;border:1px dashed var(--french);color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;padding:7px 14px;border-radius:8px;cursor:pointer}
+.addrow:hover{border-color:var(--marian);color:var(--marian)}
+
+/* fuel sub-cards */
+.fuel-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.fuel-grid{grid-template-columns:1fr}}
+.fuel-card{border:1px solid var(--line);border-radius:13px;padding:14px 16px}
+.fuel-card.span{grid-column:1/-1}
+.fc-head{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.fc-num{width:24px;height:24px;border-radius:7px;background:var(--marian);color:#fff;font-weight:800;font-size:11px;display:grid;place-items:center;flex:none}
+.fc-head h4{font-size:14px;font-weight:800;flex:1}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:720px){.split{grid-template-columns:1fr}.ficha{grid-template-columns:repeat(2,1fr)}.line .seg{width:100%}.line .seg button{flex:1}}
+.panel{border:1px solid var(--line);border-radius:13px;padding:18px}
+.panel.yes{border-color:#bfe6cd;background:var(--okbg)} .panel.not{border-color:#f0c3bc;background:var(--nobg)}
+.panel h3{font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.panel.yes h3{color:var(--ok)} .panel.not h3{color:var(--no)}
+.panel ul{list-style:none;display:flex;flex-direction:column}
+.panel li{padding:8px 0;font-size:13.5px;display:flex;gap:9px;border-bottom:1px solid rgba(0,0,0,.05)}
+.panel li:last-child{border-bottom:none}
+.panel li .m{font-weight:800;flex:none}
+.panel.yes li .m{color:var(--ok)} .panel.not li .m{color:var(--no)}
+.panel li{align-items:center}
+.panel li .sel{width:18px;height:18px;border-radius:5px;border:2px solid currentColor;flex:none;cursor:pointer;display:grid;place-items:center;transition:.12s}
+.panel.yes li .sel{color:var(--ok)} .panel.not li .sel{color:var(--no)}
+.panel li:not(.excluded) .sel{background:currentColor}
+.panel li .sel::after{content:"\2713";color:#fff;font-size:11px;font-weight:900}
+.panel li.excluded{opacity:.45}
+.panel li.excluded span[contenteditable]{text-decoration:line-through}
+.panel li .del{margin-left:auto;border:none;background:transparent;color:var(--french);font-size:18px;line-height:1;cursor:pointer;flex:none;padding:0 2px;border-radius:6px}
+.panel li .del:hover{color:var(--no);background:rgba(192,57,43,.08)}
+.panel.cond{border-color:#cfe0fb;background:#f3f6fc}
+.panel.cond h3{color:var(--marian)}
+.panel.cond li .sel{color:var(--marian)}
+.panel.cond li .m{color:var(--marian)}
+table.resp td input.cellinp,table.resp td textarea.cellinp{width:100%;border:none;outline:none;font-family:inherit;font-size:13.5px;color:var(--ink);background:transparent;resize:vertical;line-height:1.4}
+table.resp td input.cellinp::placeholder,table.resp td textarea.cellinp::placeholder{color:var(--french)}
+table.resp td input.cellinp:focus,table.resp td textarea.cellinp:focus{background:#eef4ff;border-radius:4px}
+.rid{font-weight:800;color:var(--marian);font-size:12.5px}
+.delx{border:none;background:transparent;color:var(--french);font-size:17px;cursor:pointer;line-height:1;border-radius:6px;padding:0 3px}
+.delx:hover{color:var(--no);background:rgba(192,57,43,.08)}
+.mirror{color:var(--ink);font-weight:600;font-size:13.5px}
+.mirror:empty::before{content:"(escribe el requerimiento arriba)";color:var(--french);font-weight:400;font-style:italic;font-size:12.5px}
+.panel li span[contenteditable]{outline:none;flex:1}
+.panel li span[contenteditable]:focus{background:rgba(255,255,255,.7);border-radius:4px}
+
+table.resp{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px}
+table.resp th,table.resp td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+table.resp th{background:var(--marian);color:#fff;font-weight:700;font-size:12px}
+table.resp th:nth-child(2),table.resp th:nth-child(3),table.resp td:nth-child(2),table.resp td:nth-child(3){text-align:center;width:130px}
+table.resp td:first-child[contenteditable]:focus{background:#eef4ff;outline:none}
+table.resp .pick{border:1px solid var(--line);border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;padding:5px 6px;color:var(--muted);background:#fff;cursor:pointer}
+
+.note{background:#f3f6fc;border-left:4px solid var(--jordy);border-radius:0 10px 10px 0;padding:14px 16px;font-size:13px;color:#3a4255;margin-top:18px}
+.note b{color:var(--marian)} .note [contenteditable]:focus{outline:none;background:#fff;border-radius:4px}
+
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.btn{border:none;border-radius:9px;padding:10px 18px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;transition:.15s}
+.btn.print{background:var(--marian);color:#fff} .btn.print:hover{background:#22307a}
+.btn.reset{background:#eef0f4;color:var(--muted)} .btn.reset:hover{background:#e2e6ec}
+
+footer{margin-top:36px;text-align:center;color:var(--muted);font-size:11.5px;line-height:1.7}
+footer .mk{height:28px;opacity:.9;margin-bottom:8px}
+.tip{background:#fff;border:1px dashed var(--jordy);border-radius:12px;padding:12px 16px;margin-top:18px;font-size:12.5px;color:var(--muted)}
+.tip b{color:var(--marian)}
+
+.archi{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.opt{border:1px solid var(--line);border-radius:11px;padding:12px 14px;flex:1;min-width:160px;cursor:pointer;transition:.15s}
+.opt .ot{font-weight:800;font-size:13.5px}.opt .od{font-size:12px;color:var(--muted);margin-top:3px}
+.opt[data-on="1"]{border-color:var(--marian);background:#eef4ff}
+.opt[data-on="1"] .ot{color:var(--marian)}
+.chips{margin-top:4px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#eef4ff;border:1px solid #cfe0fb;color:var(--marian);border-radius:99px;padding:6px 13px;font-size:12.5px;font-weight:700;margin:3px;font-family:inherit;outline:none}
+.tpass{border:1px solid var(--marian);border-radius:14px;overflow:hidden;margin-top:4px}
+.tpass .tp-h{background:linear-gradient(135deg,#0a0f1d,var(--marian));color:#fff;padding:15px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tpass .tp-logo{font-weight:900;font-size:17px}
+.tpass .tp-tag{font-size:11px;color:var(--jordy);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.tpass .tp-body{padding:15px 18px}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:680px){.feat-grid{grid-template-columns:1fr}.an-grid{grid-template-columns:1fr!important}}
+.feat{background:#f6f8fb;border:1px solid var(--line);border-radius:10px;padding:12px 13px}
+.feat .fi{font-size:20px}.feat .fn{font-weight:800;font-size:13px;margin-top:5px}.feat .fd{font-size:12px;color:var(--muted);margin-top:2px}
+.feat .fd[contenteditable]:focus{outline:none;background:#eef4ff;border-radius:4px}
+.an-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:4px}
+.an{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;gap:12px}
+.an-ico{width:40px;height:40px;border-radius:10px;background:#eef4ff;color:var(--marian);display:grid;place-items:center;font-size:18px;flex:none}
+.an-n{font-weight:800;font-size:14px}.an-d{font-size:12.5px;color:var(--muted);margin-top:3px}
+.an-d[contenteditable]:focus{outline:none;background:#eef4ff;border-radius:4px}
+/* === EQUIPMENT GROUPS DYNAMIC VISIBILITY === */
+.equip-group{transition:opacity .2s}
+.equip-group.hidden{display:none}
+.grp-status{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:5px;margin-left:auto}
+.grp-status.inc{background:var(--okbg);color:var(--ok)}
+.grp-status.fut{background:var(--futbg);color:var(--fut)}
+
+/* === BRAND MULTI-SELECT === */
+.brand-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.brand-chip{display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:6px 13px;border:1.5px solid var(--line);border-radius:99px;font-size:12.5px;font-weight:700;color:var(--muted);transition:.15s;user-select:none;background:var(--card,#fff)}
+.brand-chip.on{background:#eef4ff;border-color:var(--marian);color:var(--marian)}
+.brand-chip:hover:not(.on){border-color:var(--jordy);background:#f5f8ff}
+.brand-chip .bx{width:14px;height:14px;border-radius:4px;border:1.5px solid currentColor;display:grid;place-items:center;flex:none;font-size:9px;font-weight:900}
+.brand-add-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border:1.5px dashed var(--french);border-radius:99px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;background:none;font-family:inherit;transition:.15s}
+.brand-add-btn:hover{border-color:var(--marian);color:var(--marian)}
+
+/* === RECORDING SCHEMA MULTI-SELECT === */
+.rec-options{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.rec-item{border:1.5px solid var(--line);border-radius:12px;overflow:hidden;transition:.15s;background:#fff}
+.rec-item.on{border-color:var(--marian);box-shadow:0 2px 10px rgba(43,61,141,0.12)}
+.rec-header{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer}
+.rec-header:hover{background:#f5f8ff}
+.rec-chk{width:20px;height:20px;border-radius:6px;border:2px solid var(--line);flex:none;display:grid;place-items:center;transition:.12s;position:relative}
+.rec-item.on .rec-chk{background:var(--marian);border-color:var(--marian)}
+.rec-chk::after{content:"\2713";color:#fff;font-size:11px;font-weight:900;opacity:0;position:absolute}
+.rec-item.on .rec-chk::after{opacity:1}
+.rec-icon{font-size:20px}
+.rec-name{font-weight:800;font-size:14px;flex:1}
+.rec-tag{font-size:11.5px;color:var(--muted)}
+.rec-body{display:none;padding:14px 16px;border-top:1px solid var(--line);background:#f9fafc}
+.rec-item.on .rec-body{display:block}
+.rec-body .frow{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.rec-body label{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.rec-body input[type="number"]{width:80px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;color:var(--marian);background:#fff}
+.rec-body input[type="number"]:focus{outline:2px solid var(--jordy);border-color:transparent}
+.rec-body select,.rec-body textarea{padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px;color:var(--ink);background:#fff}
+.rec-body select:focus,.rec-body textarea:focus{outline:2px solid var(--jordy);border-color:transparent}
+.rec-body textarea{width:100%;resize:vertical;margin-top:8px}
+
+/* === TOTEM PASS ACCESS + MODALITY === */
+.tp-select-section{margin-bottom:14px}
+.tp-slabel{font-size:11px;font-weight:800;color:var(--jordy);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.tp-btns{display:flex;flex-wrap:wrap;gap:8px}
+.tp-btn{display:flex;align-items:center;gap:7px;padding:9px 14px;border:1.5px solid rgba(255,255,255,.25);border-radius:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:#999;background:rgba(255,255,255,.08);transition:.15s}
+.tp-btn.on{border-color:var(--jordy);background:rgba(136,175,249,.35);color:#fff;font-weight:800}
+.tp-btn:hover:not(.on){border-color:var(--jordy);background:rgba(136,175,249,.15);color:rgba(255,255,255,.9)}
+.tp-divider{height:1px;background:rgba(255,255,255,.15);margin:14px 0}
+.tp-note{font-size:12.5px;color:rgba(255,255,255,.65);margin-top:10px;line-height:1.5}
+.tp-note[contenteditable]:focus{outline:none;background:rgba(255,255,255,.1);border-radius:4px}
+.tp-obs{width:100%;padding:10px 12px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.08);color:#000;font-family:inherit;font-size:13px;resize:vertical;margin-top:8px}
+.tp-obs:focus{outline:none;background:rgba(255,255,255,.15);border-color:var(--jordy);color:#000}
+.tp-obs::placeholder{color:rgba(255,255,255,.7)}
+
+/* === ANALYTICS MULTI-SELECT + CAMERA DETAILS === */
+.analytics-list{display:flex;flex-direction:column;gap:10px}
+.an-item{border:1.5px solid var(--line);border-radius:12px;overflow:hidden;transition:.15s;background:#fff}
+.an-item.on{border-color:var(--marian);box-shadow:0 2px 10px rgba(43,61,141,0.12)}
+.an-item-head{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer}
+.an-item-head:hover{background:#f5f8ff}
+.an-item-chk{width:20px;height:20px;border-radius:6px;border:2px solid var(--line);flex:none;display:grid;place-items:center;transition:.12s;position:relative}
+.an-item.on .an-item-chk{background:var(--marian);border-color:var(--marian)}
+.an-item-chk::after{content:"\2713";color:#fff;font-size:11px;font-weight:900;opacity:0;position:absolute}
+.an-item.on .an-item-chk::after{opacity:1}
+.an-item-ico{width:38px;height:38px;border-radius:10px;background:#eef4ff;color:var(--marian);display:grid;place-items:center;font-size:17px;flex:none}
+.an-item-name{font-weight:800;font-size:14px}
+.an-item-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.an-item-body{display:none;padding:14px 16px;border-top:1px solid var(--line);background:#f9fafc}
+.an-item.on .an-item-body{display:block}
+.an-cam-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+.an-cam-tbl th{text-align:left;padding:6px 8px;color:var(--muted);font-weight:700;font-size:11px;text-transform:uppercase;border-bottom:1px solid var(--line)}
+.an-cam-tbl td{padding:5px 4px;border-bottom:1px solid #f0f2f5}
+.an-cam-tbl input,.an-cam-tbl select{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:6px;font-family:inherit;font-size:12px;color:var(--ink);background:#fff}
+.an-cam-tbl input:focus,.an-cam-tbl select:focus{outline:2px solid var(--jordy);border-color:transparent}
+.an-del-row{background:none;border:none;color:var(--french);font-size:15px;cursor:pointer;padding:2px 4px;border-radius:5px;line-height:1}
+.an-del-row:hover{color:var(--no);background:rgba(192,57,43,.08)}
+.an-add-cam{margin-top:10px;background:none;border:1px dashed var(--french);color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:7px;cursor:pointer;transition:.15s}
+.an-add-cam:hover{border-color:var(--marian);color:var(--marian)}
+
+/* === SLA EDITABLE CARDS === */
+.sla-card{border:1px solid var(--line);border-radius:13px;padding:16px;background:#fff;transition:.15s}
+.sla-card:hover{box-shadow:0 4px 14px rgba(43,61,141,0.08);border-color:var(--jordy)}
+.sla-ico{font-size:22px;margin-bottom:6px}
+.sla-lbl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px}
+.sla-val select,.sla-val input[type="text"]{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:14px;font-weight:700;color:var(--marian);background:#fff}
+.sla-val select:focus,.sla-val input[type="text"]:focus{outline:2px solid var(--jordy);border-color:transparent}
+.sla-sub{margin-top:8px}
+.sla-sub input[type="text"]{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:6px;font-family:inherit;font-size:12px;color:var(--ink);background:#fff}
+.sla-sub input[type="text"]:focus{outline:2px solid var(--jordy);border-color:transparent}
+
+/* SLA response table editable */
+#sla-resp-tbody td input,#sla-resp-tbody td select{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:6px;font-family:inherit;font-size:12.5px;color:var(--ink);background:#fff}
+#sla-resp-tbody td input:focus,#sla-resp-tbody td select:focus{outline:2px solid var(--jordy);border-color:transparent}
+.sla-del-row{background:none;border:none;color:var(--french);font-size:15px;cursor:pointer;padding:2px 4px;border-radius:5px}
+.sla-del-row:hover{color:var(--no);background:rgba(192,57,43,.08)}
+.sla-add-btn{margin-top:10px;background:none;border:1px dashed var(--french);color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;padding:7px 14px;border-radius:8px;cursor:pointer;transition:.15s}
+.sla-add-btn:hover{border-color:var(--marian);color:var(--marian)}
+
+/* === VERSION BADGE + PRINT HEADER === */
+.doc-meta{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.version-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:5px 12px;font-size:11.5px;font-weight:800;letter-spacing:.06em}
+.gen-date{font-size:12px;color:rgba(255,255,255,.65);font-weight:500}
+#print-header{display:none;text-align:right;font-size:11px;color:var(--muted);padding:8px 0 14px;border-bottom:1px solid var(--line);margin-bottom:12px}
+
+@media print{
+  body{background:#fff}
+  .actions,.addrow,.tip,.seg button:not(.active),.panel li .del,.panel li .sel,.delx,.an-add-cam,.an-del-row,.sla-add-btn,.sla-del-row,.rec-header::before{display:none}
+  .panel li.excluded{display:none}
+  .seg{border:none}.seg button.active{padding:4px 0;border:none}
+  section,.hero{break-inside:avoid}.wrap{padding:0}
+  .ficha .cell input{border-bottom:none}
+  #print-header{display:block!important}
+  .version-badge{background:#2B3D8D!important;border-color:#2B3D8D!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .gen-date{color:rgba(255,255,255,.8)!important}
+  .equip-group.hidden{display:none!important}
+  #signatures-section{display:block!important;page-break-before:always}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB00AAAJoCAYAAAAKzHmfAAAzk0lEQVR4nO3debRlZX3m8acUZNBQKMjggIBgAIkjOIJKjKDGoERXpDVRieDAoK1p0kpo7ZbYzlmo0GqcjWOiaLTVBAytAaOi4BBBicWgKMoYHDGiVv9xylAFNdzh7Pe3z3k/n7XuUvTWfh9qulX3e8/eK1avXh0AAAAAAACAOfOIJKcv5B1vMfAQAAAAAAAAgFETTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFGB2vCbJam9dv702bMjeSY5I8tYkZyX5Qep/vJb7tvdUv4cAAAAAgA3arHoAAAu2TfUAyj23esCIPCrJUUl+P8mtircMZYvqAQAAAADQC9EUAGbD9tUDRuDpSV6QZI/qIQAAAADAfBFNAWD8jk9yTfWIIrdL8u5MXlkKAAAAADAI0RQAxu1bSV5dPaLAfknem2TP6iEAAAAAwPwTTQFg3O5WPaCxnZJ8NckO1UMAAAAAgH7conoAALBBD68e0NgZSb4fwRQAAAAAaEw0BYBx+lCSM6tHNPLYJKuT/F71EAAAAACgT27PCwDj9ITqAY18LMljqkcAAAAAAH0TTQFgfHq4Pe3mSX5RPQIAAAAAIHF7XgAYmxcmuap6xMAeEMEUAAAAABgR0RQAxmNVkpdXjxjYHyf5XPUIAAAAAIC1iaYAMB57Vg8Y2DFJ/qZ6BAAAAADATYmmADAOB1cPGNizkpxSPQIAAAAAYH1EUwCo9+EkZ1SPGNDjkryhegQAAAAAwIaIpgBQ7w+rBwxon0yiMAAAAADAaImmAFBrx+oBAzu/egAAAAAAwKaIpgBQ54VJrqweMaDrqgcAAAAAACyEaAoANS5J8vLqEQN6T5KV1SMAAAAAABZCNAWAGrtXDxjQ7yZ5UvUIAAAAAICFEk0BoL2DqwcM7J+qBwAAAAAALIZoCgBtfTTJGdUjBvTt6gEAAAAAAIslmgJAW4+tHjCglybZpXoEAAAAAMBiiaYA0M7O1QMGdNckJ1SPAAAAAABYCtEUANp4cZIfVI8Y0KrqAQAAAAAASyWaAsDwLk3ykuoRAzq7egAAAAAAwHKIpgAwvN2qBwzoiCQPrh4BAAAAALAcoikADOvR1QMGtFWSt1WPAAAAAABYLtEUAIbz0SSfrB4xoGurBwAAAAAATINoCgDDeWz1gAG9O8mW1SMAAAAAAKZBNAWAYdyxesCADkry5OoRAAAAAADTIpoCwPS9OMnl1SMGdGb1AAAAAACAaRJNAWC6vpPkJdUjBvTt6gEAAAAAANMmmgLAdN2lesCAXppkl+oRAAAAAADTJpoCwPQ8unrAgO6a5ITqEQAAAAAAQxBNAWA6/m+ST1aPGNCq6gEAAAAAAEMRTQFgOv6gesCAzqoeAAAAAAAwJNEUAJbvztUDBnREkgOqRwAAAAAADEk0BYDlOSnJd6tHDGSrJG+rHgEAAAAAMDTRFACW7rIkL6oeMaBrqwcAAAAAALQgmgLA0u1SPWBA706yZfUIAAAAAIAWRFMAWJpDqwcM6KAkT64eAQAAAADQimgKAIv3iSQfqx4xoDOrBwAAAAAAtCSaAsDi/X71gAF9u3oAAAAAAEBroikALM6u1QMG9NLM93NaAQAAAADWSzQFgIX7y8zvKzHvmuSE6hEAAAAAABVEUwBYmO8l+R/VIwa0qnoAAAAAAEAV0RQAFuZO1QMGdFb1AAAAAACASqIpAGzaodUDBvS0JAdUjwAAAAAAqCSaAsDG/WOSj1WPGMhWSd5ePQIAAAAAoJpoCgAb98jqAQO6tnoAAAAAAMAYiKYAsGG7Vg8Y0LuTbFk9AgAAAABgDERTAFi/lyX5dvWIgRyU5MnVIwAAAAAAxkI0BYCbuzzJCdUjBnRm9QAAAAAAgDERTQHg5u5YPWBAl1QPAAAAAAAYG9EUANb1+OoBAzop8/2cVgAAAACAJRFNAeBGpyc5rXrEQO6a5MTqEQAAAAAAYySaAsCNDqkeMKBV1QMAAAAAAMZKNAWAid2rBwzorOoBAAAAAABjJpoCQPKyJJdUjxjI05IcUD0CAAAAAGDMRFMAevf9JCdUjxjIlkneXj0CAAAAAGDsRFMAeneH6gED+vfqAQAAAAAAs0A0BaBnj6keMKB3Z/JKUwAAAAAANkE0BaBXb07y8eoRAzkoyZOrRwAAAAAAzArRFIAeXZLkGdUjBnRm9QAAAAAAgFkimgLQm58n2b16xIAuqR4AAAAAADBrRFMAerNV9YABnZRk1+oRAAAAAACzZrPqAQDQ0IrqAQPaLcmJ1SOAQWzT6JzNk2zX6Kwtkty20VnnJflJo7Mq3CLJfZLsm8nPlZ3ii2N/49dJfpDkR0m+nuQrSX5ZOYgkyW3S5ufoiiQ7NjgnSW6Z5PaNzros/dxZZIckuyTZunoI+Y8kX6gesREPGeCav05y9gDXZWG2SHL/KV/ziiQXTvmaAMwZ0RSAHlyTZPvqEQO7uHoAzKn9M3kG8uMy/7+PzKu3JDmqesQU7Z3kmUn+JMntirfMqmuT/E2SNyX5RvGW1nZL8uxMfk/bs3YKS7Qq8/lj9/gkT1jzn5sXb2H9xvwFqJ8Z6LqvSvLnA12bjfv5ANf8YZJtB7guAHPEVyADMO/OyvyHjrOqB8AcekOS1UnOSXJk5v/3Ecbt1knekcnPyQuSPDeC6XLcLpPvwwsy+T59R+b/+/PETP5dL05yfOYzujF7npbkokx+bn4wyeERTBmX45PsUT2iQ+dWDwCgX6IpAPPsf2aYWzWNydOSHFA9AubIX2fyydtnVQ+BJHfI5JWQP0ny1OIt8+ypmdyV4uLM3yfHn5/J72knVQ+BtZycyc/LtyfZvXYKbNK3qgd05hmZPHYAAEq4PS8A82r3zP/znrbM5JNNwPLdK8mXq0fAGlsk+WyS+1YP6cxumXxy/OtJ7pfk+to5y3LrJFcl2ap6CKzlxAj4zKZPJ3lY8YYebJXJrfMBoIxXmgIwb07O5Hk78x5Mk+TfqwfAnDgmginj8fxMnuMlmNbZN8nPkryoesgSPSCTVycLpozFXeIVz8y2hyZ5YvWIDlxdPQAARFMA5sV5SW6V5HnVQxp5VyavNAWW521JTqkeAWtckuQ11SP4T/8ryRXVIxbpcUk+Vz0C1vKKJJdWj4ApeH/1gDn35iRbV48AALfnBWDWfSvJwenrkzEHJfmT6hEwB16a5IjqEZBk5ySXV49gvXbI5BVyv53k34q3bMp+ST5cPQLW8o0ke1WPgCm6Osn21SPm0H5JjqweAQCJV5oCMLs+ksknme+WvoJpkpxZPQDmwL2SnFA9AjK5lapgOn4XZvJFS2P2xeoBsJbVEUyZP9vFHSGG4OMXAKMhmgIwS76a5NBMnll6WJIf1M4p0cOzWqEFzzBlDPaJW6nOkjOTPKh6xAbM2m2EmW+rqwfAgJ6fyd0HmI6vVA8AgLW5PS8AY3Z+kjOSvDvJucVbxuCkJLtWj4A58PfVAyDJXTP5OMds+WySPZJcVD1kLc/N5DbCMAaCKT34ZiZfyMvyPCvJPatHAMDaRFOA2fGWJNdUjxjArzJ5dcTPM7n13YXp8xWkm7JbkhOrR8AcuHUmr1iHaquqB7BkqzKuT5afXD0A1vhO9QBo6J+TPKR6xAy7dZI3VI8AgJsSTQFmxxfWvNGni6sHwJz4u+oBELdSnQfXJdm2eEOSPLN6AKzxpiR3rh4BDR2Y5ElJ3ls9ZEZdXT0AANZHNAWA8TtrSte5JsknknwxyaWZ3Frw8iS/ntL1ma4fVQ+YU4+qHkD3Xhm3Up0HK5O8OclRxTteX3w+JMn+SZ5RPQIKvCfJ++K21Iv1tiRbVo8AgPURTQFg3J6e5IAlftsfZ/LJ1DcmuWxqi2B2/VH1ALq3Msnx1SOYmiOTvCR1H2O3SbJ50dmwtnOqB0Chq5JsXz1ihuyf5IjqEQCwIbeoHgAAbNABmTzLdrFem+RWmXwy9S8imMJvPL16AN371+oBTF3lj+nRhWfDb5xSPQCKbRfPll4MX2QBwKiJpgAwTs/I4m/Le0SSFUn+a5Ibpj0I5sDB1QPo2r3jeX/zaGWShxedfUjRubC2Y6oHwAg8N8ne1SNmwFerBwDAprg9LwCMy8okn0+y1yK+zfFJXj3MHACm5B+qBzCYjya5dcG59ys4E9b2qeoBMCIXZPIFrKzfMUnuUT0CADbFK00BYBz+OMnlSa7LwoPp+Zn8xVwwhU3z514q7Zpkh+oRDGbrJPsUnQuVql5lDWN1dvWAkdom47iV98rqAQCMn08eAVDtoiSrveVvkuy8iO+3ZyfZdxHvD73bsXoAXTu1egCD++vqAdDY86sHwAg9OJMvhmVdV1QPAICFWrF69erqDQD07br4is/F2jnJD6pHAOWG+IP8eUnuO8B1e1f5l67rk5yW5J8zuf37d5P8snDPtN02k1d5PjTJEzN5VW8Vt2VcnqF+nfhxGcbvxDMce3J9ko9Vj9iIsX1y85ZJfl09YiTemeQp1SPW4mMCQJ8ekeT0hbyjaApAtesimi7UtUm2qx4BjMYQf5D/XJIHDXDdnh2c5B8Lzj01yXEZ3yeSWzg+ySsLzn1SkvcVnDsvRFNgqcb2se66TL6op3cPyOTPlmPiYwJAnxYcTd2eFwBmwzURTAFm0bMbn/fhTD4heGzG90nkVl6VyffBOxufe3Tj8wAYp22TvL56xAiMLZgCwCaJpgAwftcl2b56BABL8riGZz06yR82PG/snpbkgQ3PO6DhWQCM27GZ3Ma6V1+vHgAAS7FZ9QAAYJPc2mlxdk6yZ5Kdktw+k1fobl26aGleUD0AmCl3zuR5pazr85l8XPh+9RAAuvO19Hk72OckuXv1CABYCtEUAMbNK0w3bLMkh2Xyqqrfy/x9X70/yVeqRwDLcrdG5+wRwXRjfpDJ99GqBmc9KMm/NDgHgNnwL+nrefErk7y2egQALJXb8wLAeB2VybNMudG9M4mJq5PckORvkxye+QumwHy4d4MznprkogbnzLqLMnnly9Du1eAMAGbHA5M8pXpEQ1dVDwCA5RBNAWCcPpfkLdUjRuI2Sd6aSSg9L8kTa+cALNiuA19/VZJ3DXzGPHl9ku8MfMbuA18fgNnzzvRxt793J9m8egQALIdoCgDj1NMtnDbk4ExuqfjjJH9avAVgKe408PV/e+Drz6MHDnz9lQNfH4DZdHX1gIE9OMmTq0cAwHKJpgAwPrtVDyh2UJKfJvnHJDsWbwFYjq0HvPZnkvx6wOvPq8szuWvBULYd8NoAzK6VSf5P9YgBnV09AACmQTQFgHF5cZJLq0cU2S6TV5aemWFDA0ArQz5v+egBrz3vjhnw2rca8NoAzLZnJ7lH9YgBfL16AABMi2gKAONxYZKXVI8o8oZMblnllaUAC3NB9YAZ9vnqAQB066vVA6bsuUnuXj0CAKZFNAWA8direkCBOyRZneRZ1UMAZsiZ1QPmwGeqBwDQrS9UD5iSbZOcXLwBAKZKNAWAcbhf9YACxyX5XvUIgBn0yeoBc+DvqwcA0K37JTmiesQUXF09AACmTTQFgHpvTPLF6hGNfSLJ66pHAMyo86oHzIHePu4CMC5vS7JF9YhleF+SW1aPAIBp26x6AAB07uokz64e0djlSXauHgEww75ZPWAOfK16AADduyrJNtUjluAhSQ6vHgEAQ/BKUwCodfvqAY2tjmAKsFxXVQ+YA9dXDwCge7+V5E3VI5bAc8EBmFuiKQDUeUz1gMZWVw8AAAAYkWckuXf1iEX4RvUAABiSaAoANT6S5OPVIxoSTAEAgFnyzkbnzMqzyp+fZK8G53gMAQBlRFMAaO9XSQ6rHtHQddUDAAAAFuk9SV7W6KxzGp2zVLdL8ppGZ+3d6BwAuBnRFADa27Z6QEP/nGRl9QgAAIAlOCHJFQ3O2T/JkQ3OWapWz1M/uNE5ALBeoikAtHVkkp9Uj2jkxCQHVo8AAABYhp0anfPmJFs0Omsx3p82n0P+SJIzGpwDABskmgJAO2cneWv1iEb2SXJS9QgAAIApeGKjc65tdM5CHZR2/+49PcIGgJHarHoAAHSkp1ddnl89AACA7twlye0zef7itkm2zI2PxtgqyW3X8222SbL1Wv98Q5JrNnLGDbn5rUp/kXVj14+T/HStf74qya/Wer8fbeT6jNPfJjk2w/+dbutMXnF61MDnLNSZjc65Y6NzAGCjRFMAaGO36gENnVs9AACAuffYJE9P8gfVQ5bgVpnEV2bLQ5KsbnDOkUnemPq/V32z0TknJbm80VkAsFGiKQAM78VJLq0e0cgxSe5TPQIAgLl0j0xi0gOrh9CtfZN8vcE5X0qyosE5G3J8kt9ucM5lSV7U4BwAWBDPNAWAYV2Y5CXVIxpZmeSU6hEAAMydBye5IslXI5hS6/y0+ztP1StNt0vyykZn7dLoHABYENEUAIa1V/WAhq7d9LsAAMCC3SbJRUnOTrJD8Rb4jeMyeW7t0O6T5JkNzrmpqxud8/hG5wDAgommADCc/aoHNHRa/LkCAIDpeX0mYWr36iGwHrdvdM4bk2zV6Kwk+WCjc87M5O+QADAqPrkJAMN4Y+pup9Tao5IcVj0CAIC5sE2S65McWz0ENuI/khzV6KxrGp3z8LR79efDG50DAIsimgLA9F2d5NnVIxr6RPUAAADmwlOS/DDJltVDYAHekuS8BudsleStDc75VIMzkmTPRucAwKKJpgAwfa1u1TQGl1cPAABgLvxTkndWj4BFum+jc/40wz7+5VsDXnttJydZ1egsAFi0zaoHAMCceXT1gIZenWTn6hEAAMy0FUl+XT0CluGBST7X4JwvZvLrZdpekGSPAa57U9cmeV6DcwBgybzSFACm50NJPlk9opF9kvxZ9QgAAGbawyOYsjxj+Nzm59PuVdJfmfL1dkjysilfc0O2b3QOACzZGP5gAQDz4FdJnlA9oqHzqwcAADDTXpt2z1Bkft2yesAaT0tyQ4Nz7pnk6Cle74opXmtjnppkdaOzAGDJRFMAmI5tqwc0dG71AAAAZtp5SZ5TPQKmbIdG55ya5NZTuM5pU7jGQpyT5F2NzgKAZRFNAWD5jkzyk+oRjRyT5D7VIwAAmEn7ZPJqs3tXD4EBXJd2jzC5epnf/hFJDpvGkAW4f6NzAGDZRFMAWJ6zk7y1ekQjK5OcUj0CAICZdFI84oH591dJvtngnC2TvGMZ3/70Ke3YFF9wC8BMEU0BYHkOrB7Q0LXVAwAAmDmbZ/KquBOrh0Ajezc656lZ2qs4L572kA14S5IvNzoLAKZCNAWApdulekBDp8WfGwAAWJzXJPlFku2qh0BjBzc65/OLfP8Tk+w2xJCb+HmSoxqcAwBT5ZOfALA0L05yWfWIRh6Zds+7AQBg9j09k2eXPr96CBQ5I8lHGp311QW+306Z3Ca7he0bnQMAUyWaAsDiXZjkJdUjGvpk9QAAAGbCf88klr6legiMQKsvPL1HkuMW8H7fH3rIGscm+WmjswBgqkRTAFi8vaoHNHR59QAAAEbrrkmel+T8TGLpy2vnwOjcsdE5r0uyzUb+/79vtOP8JKc2OgsApk40BYDF2a96QEOvTrJz9QgAAEbjmEzi6G/eViX5qyT7LPO6D0uyoqO3G5b5/cXsuDztbol71Qb+90cmObTRhn0bnQMAgxBNAWDhTklybvWIRvZJ8mfVIwAAGJWhXjX3rYGuC2PwoiSXNTjnVkneuZ7/vdXjVg5sdA4ADEY0BYCFuToLe07MvDi/egAAAMCc2KXROU9J8tC1/vmSRud+IMnZjc4CgMGIpgCwMLevHtDQl6oHAAAAzJnHNzrn02v+8wVJdm105uGNzgGAQW1WPQAAZsCjqwc0dEyS+1aPAAAAmDOnJTkzye82OOtnSbZqcE6S7NjoHAAYnFeaAsDGfSjtngFTbWUmz20FAABg+h7e6JxWwfSFSa5sdBYADE40BYAN+0WSJ1SPaOja6gEAAHTpt6oHQEN7Vg+YkkuTvLx6BABMk2gKABt2u+oBDZ0Wfy4AmBVug7d8W1QPANaxU/UAZlarV1RO06okJ1ePmILdqgcAwLT55CgArN+RSX5aPaKRRyY5rHoEAAu2T/WAObBv9QBgHXeuHsDMuk31gCV6Xmb7Tj+PqR4AAEMQTQHg5s5O8tbqEQ318sxWgHnxoOoBc+B+1QOAdfxO9QAosH31gCX6RJKPV48AgCGIpgBwcwdWD2jo8uoBACzaodUD5sDvVw8A1uFVa/RodZKnVo9YAh9DAZhboikArGuX6gENvTrJztUjAFi0e1cPmAMHVw8A1uG24/TqXUnOqR6xCLtXDwCAIYmmAHCjFya5rHpEI/sk+bPqEQAs2X7VA2bYvaoHAOvlixno1f2rByzQy5JcUj0CAIYkmgLAxDeTvLx6REPnVw8A6MCVA1777QNee969bsBr/8eA14YxWD3gtU8Z8NowdvepHrAJVyQ5oXoEAAxNNAWAib2rBzT0peoBAJ342YDX3jfJXQa8/rxamWGfXf7DAa8NYzDkF4PsmcmvUejRl5O8pXrERuxUPQAAWhBNAaCvWxweneS+1SMAOvHdga//6YGvP4++OPD1rx34+lDtJwNf/18Hvj6M2VFJfl49Yj2eXD0AAFoRTQHo3SlJzq0e0cjKJKdWjwDoyKUDX3/XJP9t4DPmydMyeSXbkDzrjXn3jYGvf+ckxw18BozZ9tUDbuKsJO+tHgEArYimAPTsyvT1SZlrqgcAdKbF7dBfleRuDc6ZdXdNm+fA9vKFWPTrggZnvC7Jbg3OgTH6aZJjq0es5SHVAwCgJdEUgJ7tWD2godOS3LJ6BEBnWr3q8ML09WzuxbpLklWNzhr69r9Q7bpG51ycZJtGZ8HYnJrk/OoRSe5RPQAAWhNNAejVo6sHNPTIJIdVjwBgUBckeWz1iBE6KMPfJhl6c32jc36YZP9GZ8HY7Ft8/hviGcMAdEg0BaBHH0ryyeoRDfX07wowNn/X8KyPZPLsMSb+IcmZDc/7p4ZnQaWWv6+dk+S1Dc+DMTmw6NwfJzm66GwAKCWaAtCbXyR5QvWIhi6vHgDQuZMbn3dAktVJ3pQ+b215m0wCy+okhzQ+++TG50GVNzc+7zmZ/Jo+vvG5UO3sJB8oOPf2BWcCwCisWL16dfUGAPp2XZKVDc+7TZKfNjyv0ivjk0uz7N5JvlI9glEb4g/yn0vyoAGu27vqv3R9OMmnM7nN3q9qp0zdZknumeRhSQ6tnZIVxefPuqF+nfhxGUbl72ufT/K+TH5f+26SXxZu6cUNaXdb5sW6Q5LvDXTtg5OcMdC1F6Plr7dnZfKFV9V8TABgmh6R5PSFvONmAw8BgDF5avoJpntHMAUYiw8leXzh+YfFs62H9qnqAdDYR1P3hQoPWPNGW2JTnR2TXNHgnC9nHMEUAMq4PS8AvfhskndVj2joguoBAPynZ1cPYHBHVQ+Axp5bPQA6cmWSFzY45z4NzgCAURNNAejFAdUDGvpS9QAA1nFVkkuqRzCYq5NcWj0CGrs0k5/7UG376gGNvDzDfqx54IDXBoCZIZoC0INe/iKdJEcnuW/1CABu5pHVAxjMY6oHQJGHVg+A9PW5zd0Guu57MnlWMAB0r6c/WADQp/2TXFM9opGVSU6tHgHAev1b3Dp9Hl2e5AvVI6DIBUnOqx4BnTl4ytf7YZI/nvI1AWBmiaYAzLMnpK9b1fYShwFm1T2rBzB1d68eAMXc4QTaOiPJC6Z4vW2neC0AmHmiKQDz6vFJPlQ9oqEPJrll9QgANuqXSU6oHsHUvCrJddUjYASmGXCATXtFkucs8xo/T7JiClsAYK6IpgDMoz2TnFY9oqFHZhKJARi/lyVZVT2CZbssyZ9Xj4CReEWSb1WPgM68Psk+S/y270my1RS3AMDcEE0BmCfXZPLVsr19MvqT1QMAWJQ9qwewbLtUD4CRuVv1AOjQNzL5++/hWdidD96fZMt4hikAbNBm1QMAYErekOTo6hEFLq8eAMCSbJ/k6uoRLMn21QNgpO6cyauwgbY+sOYtSf4wyQOS7JDk+kxeBf7xJBfWTAOA2SKaAjDrLkhyvyQ/rR5S4JVJdq4eAcCSXJPkDvHFL7Nmr0x+7ICb+26S/ZN8sXoIdOy09PWoGgCYKrfnBWBWrUqyb5K7p89guneS46tHALAs388knDIb9opX6sCmfCnJfapHAADAUoimAMyaD2Ryq6E9k5xfvKXSBdUDAJiK7yfZqnoEm7R9BFNYqC9ncqteAACYKaIpAGP3vSSvy+RWXyuSHJ7kqtJF9b5UPQCAqfp5Jh/jzq0ews1ckMmPjVvywuJ8N5NfO9+rHgIAAAvlmaYAVPtvSfZY89+vzuTZbhdl8mqO64o2jdnRSe5bPQKAQeyX5ElJ3lM9hCTJUUneUj0CZtydkrw+ybHVQwAAYFNEUwCq+WTkwq1Mcmr1CAAG9d41bx9N8gfFW3r1qSSPqB4Bc+S4JH+R5N+S7Fi8BQAANsjteQFgdrg1IEA/Dk1yqySfLt7Rk89l8gVKgilM34+S7JTkYUl+WDsFAADWTzQFgNnwwSS3rB4BQFM3JDkok+cCvqJ4yzx7RSbfxw/KJOwAw/lMkm2T3DPJWbVTAABgXW7PCwDjd3CSxw98xvVJLk5ybZKfDXwWC7OqegAwKi9Y87ZtkmcmeUqSfSoHzbALkrwryZvi+elQ5WtJHrLmvz8mybOTPLpuDgAAJCtWr15dvQEA2LhpfrD+dZIPJflwJrd8/P4Urw209UcDXPP8NW/Mljsl2T2TW8tuVbxlbK7P5FagFyf5bvEWNu4RSW475Wten+RjU74mw7tXkrsm2SPT/znB0vwkyV9Wj9iALTL5Ipi13S6TW9z/xuZJtrvJ+9x2zbf9jc3W8z77J/nSFDayeN/K5PeAaVsxwDUBGL9HJDl9Ie8omgLAuP0oyW8t8xrnJHllJrEUAAAAAKAXC46mbs8LAOP171l6ML0iyZ9ncvtBAAAAAAA24hbVAwCAm3lQJrfk3XYJ3/bMJLsl2SmCKQAAAADAgoimADAeByT51ySfXcK3PSfJ1kkenuTSKW4CAAAAAJh7bs8LAIt3m6z7hUdbJ9nmJu+zw03e59a5+a12d0mya5J7JDlwiVt+leQ+Sb62xG8PAAAAANA90RSAakcm2WOtf94iyW1v8j7bJdl8rX/eMje/de32Wffj2pZJVk5n4mj97yR/UT0CAAAAAGDWiaYAVHt15j9uDmGHJFdVjwAAAAAAmAeeaQoAs+XsJCsimAIAAAAATI1oCgCz4xVZ+rNPAQAAAADYALfnBYDZcESSd1SPAAAAAACYR6IpAIzfoUk+Vj0CAAAAAGBeuT0vAIzbH0UwBQAAAAAYlGgKAOP1zCR/Vz0CAAAAAGDeiaYAME5vTvLX1SMAAAAAAHogmgLA+FyW5BnVIwAAAAAAeiGaAsD47FI9AAAAAACgJ6IpAIzLftUDAAAAAAB6I5oCwHickuTc6hEAAAAAAL0RTQFgHK5Mclz1CAAAAACAHommADAOO1YPAAAAAADolWgKAPUOqR4AAAAAANAz0RQAar0/yenVIwAAAAAAeiaaAkCd65P8l+oRAAAAAAC9E00BoM7K6gEAAAAAAIimAFDlSUluqB4BAAAAAIBoCgAVTk/yvuoRAAAAAABMiKYA0N4h1QMAAAAAALiRaAoAbe1QPQAAAAAAgHWJpgDQzrFJrqoeAQAAAADAukRTAGjjnCSnVo8AAAAAAODmRFMAaOP+1QMAAAAAAFg/0RQAhrdH9QAAAAAAADZMNAWAYZ2U5KLqEQAAAAAAbJhoCgDDWZXkRdUjAAAAAADYONEUAIazZ/UAAAAAAAA2TTQFgGHsVz0AAAAAAICFEU0BYPpOSXJu9QgAAAAAABZGNAWA6boyyXHVIwAAAAAAWDjRFACma8fqAQAAAAAALI5oCgDTc0j1AAAAAAAAFk80BYDp+ECS06tHAAAAAACweKIpACzf9UkOrx4BAAAAAMDSiKYAsHwrqwcAAAAAALB0oikALM+TktxQPQIAAAAAgKUTTQFg6U5P8r7qEQAAAAAALI9oCgBLd0j1AAAAAAAAlk80BYCl2aF6AAAAAAAA0yGaAsDiHZvkquoRAAAAAABMh2gKAItzTpJTq0cAAAAAADA9oikALM79qwcAAAAAADBdoikALNwe1QMAAAAAAJg+0RQAFuakJBdVjwAAAAAAYPpEUwDYtFVJXlQ9AgAAAACAYYimALBpe1YPAAAAAABgOKIpAGzcftUDAAAAAAAYlmgKABt2SpJzq0cAAAAAADAs0RQA1u/KJMdVjwAAAAAAYHiiKQCs347VAwAAAAAAaEM0BYCbO6R6AAAAAAAA7YimALCuDyQ5vXoEAAAAAADtiKYAcKPrkxxePQIAAAAAgLZEUwC40crqAQAAAAAAtCeaAsDEk5LcUD0CAAAAAID2RFMAmDzD9H3VIwAAAAAAqCGaAkBySPUAAAAAAADqiKYA9G6H6gEAAAAAANQSTQHo2XOSXFU9AgAAAACAWqIpAL06J8nrq0cAAAAAAFBPNAWgV/evHgAAAAAAwDiIpgD0aI/qAQAAAAAAjIdoCkBvTkpyUfUIAAAAAADGQzQFoCerkryoegQAAAAAAOMimgLQkz2rBwAAAAAAMD6iKQC9+N3qAQAAAAAAjJNoCkAPTkny/6pHAAAAAAAwTqIpAPPurCTHVY8AAAAAAGC8RFMA5tllSR5SPQIAAAAAgHETTQGYV1cm2aV6BAAAAAAA4yeaAjCPzk6yY/UIAAAAAABmg2gKwLx5TZIDq0cAAAAAADA7NqseAABT9IAkX6geAQAAAADAbPFKUwDmwUeSrIhgCgAAAADAEnilKQCz7Nwkj0pyVfUQAAAAAABml1eaAjCLPp1kuyT7RTAFAAAAAGCZRFMAZsUlSZ6SyW14D0pybe0cAAAAAADmhdvzAjBG38nk+aSfT/LhTIIpAAAAAAAMQjQFoNq21QMAAAAAAOib2/MCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6JpoCgAAAAAAAHRNNAUAAAAAAAC6JpoCAAAAAAAAXRNNAQAAAAAAgK6JpgAAAAAAAEDXRFMAAAAAAACga6IpAAAAAAAA0DXRFAAAAAAAAOiaaAoAAAAAAAB0TTQFAAAAAAAAuiaaAgAAAAAAAF0TTQEAAAAAAICuiaYAAAAAAABA10RTAAAAAAAAoGuiKQAAAAAAANA10RQAAAAAAADommgKAAAAAAAAdE00BQAAAAAAALommgIAAAAAAABdE00BAAAAAACArommAAAAAAAAQNdEUwAAAAAAAKBroikAAAAAAADQNdEUAAAAAAAA6Nr/B0py8sqMufkSAAAAAElFTkSuQmCC" alt="TOTEM">
+    <div class="kicker">Checklist de Solución Ofertada · Formato General</div>
+    <h1>Detalle de la solución ofertada por líneas de negocio</h1>
+    <p class="sub">Plantilla reutilizable para cualquier proyecto Totem. Define qué líneas se ofertan — incluido el servicio de Monitoreo de Combustible —, el equipamiento, los servicios y los límites del alcance.</p>
+    <div class="doc-meta">
+      <span class="version-badge" id="doc-version">v01</span>
+      <span class="gen-date" id="doc-gen-date">Sin generar</span>
+    </div>
+  </div>
+  <div id="print-header"></div>
+
+  <div class="ficha">
+    <div class="cell"><div class="lbl">Cliente</div><input placeholder="Nombre del cliente" required></div>
+    <div class="cell"><div class="lbl">Proyecto</div><input placeholder="Nombre del proyecto" required id="proj-name"></div>
+    <div class="cell"><div class="lbl">GTT</div><input placeholder="GTT-001" id="gtt-code" required></div>
+    <div class="cell"><div class="lbl">Ubicación</div><input placeholder="Ciudad / sitio" required></div>
+    <div class="cell"><div class="lbl">Contacto cliente</div><input placeholder="Nombre y cargo" required></div>
+    <div class="cell"><div class="lbl">Versión</div><input placeholder="v01" id="version-field" required></div>
+    <div class="cell"><div class="lbl">Fecha</div><input placeholder="Mes / Año" required></div>
+    <div class="cell"><div class="lbl">Responsable Totem</div><input placeholder="Nombre" id="resp-totem" required></div>
+  </div>
+
+  <!-- 1. REQUISITOS -->
+  <section>
+    <div class="sec-head"><div class="sec-num">1</div><h2>Requerimientos del cliente</h2></div>
+    <p class="sec-desc">Digita aquí los requerimientos levantados con el cliente. Cada uno se numera (R1, R2…) y se enlaza automáticamente con la matriz de solución al final del documento (última sección).</p>
+    <table class="resp">
+      <thead><tr><th style="width:50px">#</th><th style="text-align:left">Requerimiento del cliente</th><th style="width:120px">Prioridad</th><th style="width:46px"></th></tr></thead>
+      <tbody id="reqBody"></tbody>
+    </table>
+    <button class="addrow" onclick="addReq(true)">+ Agregar requerimiento</button>
+  </section>
+
+  <!-- 2. LINEAS -->
+  <section>
+    <div class="sec-head"><div class="sec-num">2</div><h2>Líneas de negocio Totem</h2></div>
+    <p class="sec-desc">Marca el estado de cada línea para esta oferta: Incluida, Fase futura o No aplica.</p>
+    <div class="lines">
+      <div class="line" data-state="inc"><div class="ico">📹</div><div class="ln-body"><div class="ln-name">Videovigilancia / CCTV IP</div><div class="ln-note" contenteditable="true">Cámaras IP, NVR/grabación, acceso remoto, analítica de video.</div></div><div class="seg"><button class="s-inc" onclick="setState(this,'inc')">Incluida</button><button class="s-fut" onclick="setState(this,'fut')">Fase futura</button><button class="s-no" onclick="setState(this,'no')">No aplica</button></div></div>
+      <div class="line" data-state="no"><div class="ico">🚨</div><div class="ln-body"><div class="ln-name">Intrusión / Alarmas</div><div class="ln-note" contenteditable="true">Sensores, paneles de alarma, sirenas, detección perimetral.</div></div><div class="seg"><button class="s-inc" onclick="setState(this,'inc')">Incluida</button><button class="s-fut" onclick="setState(this,'fut')">Fase futura</button><button class="s-no" onclick="setState(this,'no')">No aplica</button></div></div>
+      <div class="line" data-state="no"><div class="ico">🚪</div><div class="ln-body"><div class="ln-name">Control de Accesos</div><div class="ln-note" contenteditable="true">Cerraduras, lectoras, biometría, torniquetes, talanqueras, LPR.</div></div><div class="seg"><button class="s-inc" onclick="setState(this,'inc')">Incluida</button><button class="s-fut" onclick="setState(this,'fut')">Fase futura</button><button class="s-no" onclick="setState(this,'no')">No aplica</button></div></div>
+      <div class="line" data-state="no"><div class="ico">🔊</div><div class="ln-body"><div class="ln-name">Perifoneo / Audio IP</div><div class="ln-note" contenteditable="true">Bocinas IP, comunicación bidireccional, alertas y avisos.</div></div><div class="seg"><button class="s-inc" onclick="setState(this,'inc')">Incluida</button><button class="s-fut" onclick="setState(this,'fut')">Fase futura</button><button class="s-no" onclick="setState(this,'no')">No aplica</button></div></div>
+      <div class="line" data-state="no"><div class="ico">🔥</div><div class="ln-body"><div class="ln-name">Detección de Incendios</div><div class="ln-note" contenteditable="true">Detectores de humo/calor, central, estaciones manuales.</div></div><div class="seg"><button class="s-inc" onclick="setState(this,'inc')">Incluida</button><button class="s-fut" onclick="setState(this,'fut')">Fase futura</button><button class="s-no" onclick="setState(this,'no')">No aplica</button></div></div>
+      <div class="line" data-state="inc"><div class="ico">⛽</div><div class="ln-body"><div class="ln-name">Monitoreo de Combustible</div><div class="ln-note" contenteditable="true">Telemetría de tanques y equipos, control de inventario y despachos, reportería, alertas y seguimiento (ver sección 6).</div></div><div class="seg"><button class="s-inc" onclick="setState(this,'inc')">Incluida</button><button class="s-fut" onclick="setState(this,'fut')">Fase futura</button><button class="s-no" onclick="setState(this,'no')">No aplica</button></div></div>
+      <div class="line" data-state="no"><div class="ico">🖥️</div><div class="ln-body"><div class="ln-name">Monitoreo 24/7 (Central Totem)</div><div class="ln-note" contenteditable="true">Recepción de señales, verificación y respuesta desde central.</div></div><div class="seg"><button class="s-inc" onclick="setState(this,'inc')">Incluida</button><button class="s-fut" onclick="setState(this,'fut')">Fase futura</button><button class="s-no" onclick="setState(this,'no')">No aplica</button></div></div>
+      <div class="line" data-state="no"><div class="ico">🌐</div><div class="ln-body"><div class="ln-name">Redes e Infraestructura</div><div class="ln-note" contenteditable="true">Cableado estructurado, switches PoE, fibra, racks, energía.</div></div><div class="seg"><button class="s-inc" onclick="setState(this,'inc')">Incluida</button><button class="s-fut" onclick="setState(this,'fut')">Fase futura</button><button class="s-no" onclick="setState(this,'no')">No aplica</button></div></div>
+    </div>
+  </section>
+
+  <!-- 2. EQUIPAMIENTO -->
+  <section>
+    <div class="sec-head"><div class="sec-num">3</div><h2>Equipamiento ofertado (suministro Totem)</h2></div>
+    <p class="sec-desc">Edita descripciones y cantidades. Usa "+ Agregar ítem" para sumar filas. Todo lo listado es suministrado e instalado por Totem.</p>
+
+    <div class="equip-group" id="grp-cctv">
+      <div class="group-title" contenteditable="true">Videovigilancia CCTV IP <span class="grp-status inc">INCLUIDA</span></div>
+      <ul class="ck" data-grp="cctv">
+        <li><span class="qty"><input placeholder="0"></span><span class="box"></span><div><div class="it-main" contenteditable="true">Grabador NVR / servidor de video</div><div class="it-sub" contenteditable="true">Capacidad de canales y almacenamiento según diseño</div></div></li>
+        <li><span class="qty"><input placeholder="0"></span><span class="box"></span><div><div class="it-main" contenteditable="true">Cámaras IP (fija / bala / domo / PTZ / térmica)</div><div class="it-sub" contenteditable="true">Tipo y resolución según área de cobertura</div></div></li>
+      </ul>
+      <button class="addrow" onclick="addRow('cctv')">+ Agregar ítem</button>
+    </div>
+
+    <div class="equip-group hidden" id="grp-fuel">
+      <div class="group-title" contenteditable="true">Monitoreo de Combustible — Hardware <span class="grp-status inc">INCLUIDA</span></div>
+      <ul class="ck" data-grp="fuelhw">
+        <li><span class="qty"><input placeholder="0"></span><span class="box"></span><div><div class="it-main" contenteditable="true">Sensores de nivel por tanque</div><div class="it-sub" contenteditable="true">Sonda capacitiva / ultrasónica según tipo de tanque</div></div></li>
+        <li><span class="qty"><input placeholder="0"></span><span class="box"></span><div><div class="it-main" contenteditable="true">Caudalímetros / medidores de flujo en despacho</div><div class="it-sub" contenteditable="true">Registro de volumen por carga y egreso</div></div></li>
+        <li><span class="qty"><input placeholder="0"></span><span class="box"></span><div><div class="it-main" contenteditable="true">Unidad de telemetría / datalogger + conectividad</div><div class="it-sub" contenteditable="true">Envío de datos a plataforma de monitoreo</div></div></li>
+        <li><span class="qty"><input placeholder="0"></span><span class="box"></span><div><div class="it-main" contenteditable="true">Identificación de equipo/unidad (RFID / lectora)</div><div class="it-sub" contenteditable="true">Asociación de cada despacho a una unidad</div></div></li>
+      </ul>
+      <button class="addrow" onclick="addRow('fuelhw')">+ Agregar ítem</button>
+    </div>
+
+    <div class="equip-group hidden" id="grp-net">
+      <div class="group-title" contenteditable="true">Redes y conectividad <span class="grp-status inc">INCLUIDA</span></div>
+      <ul class="ck" data-grp="red">
+        <li><span class="qty"><input placeholder="0"></span><span class="box"></span><div><div class="it-main" contenteditable="true">Switches PoE</div><div class="it-sub" contenteditable="true">Número de puertos según cantidad de dispositivos</div></div></li>
+        <li><span class="qty"><input placeholder="0"></span><span class="box"></span><div><div class="it-main" contenteditable="true">Cableado estructurado UTP / fibra + ductería</div><div class="it-sub" contenteditable="true">Tendido y canalización</div></div></li>
+      </ul>
+      <button class="addrow" onclick="addRow('red')">+ Agregar ítem</button>
+    </div>
+  </section>
+
+  <!-- 3. ESPECIFICACIONES TÉCNICAS -->
+  <section>
+    <div class="sec-head"><div class="sec-num">4</div><h2>Especificaciones técnicas de la solución</h2></div>
+    <p class="sec-desc">Arquitectura, integración, marcas homologadas, esquema de grabación, control de accesos TOTEM PASS y analíticas de video ofertadas.</p>
+
+    <div class="group-title">Arquitectura del sistema</div>
+    <div class="archi" id="archi">
+      <div class="opt" data-on="1" onclick="pickArchi(this)"><div class="ot">Sistema IP</div><div class="od">Cámaras y dispositivos sobre red estructurada (recomendado).</div></div>
+      <div class="opt" onclick="pickArchi(this)"><div class="ot">Sistema análogo / HD</div><div class="od">Aprovecha cableado coaxial existente.</div></div>
+      <div class="opt" onclick="pickArchi(this)"><div class="ot">Híbrido</div><div class="od">Combina equipos IP y análogos en una sola plataforma.</div></div>
+    </div>
+
+    <div class="group-title">Integración de equipos</div>
+    <ul class="ck" data-grp="integ">
+      <li><span class="box"></span><div><div class="it-main" contenteditable="true">Integración con sistemas existentes del cliente</div><div class="it-sub" contenteditable="true">Cámaras, NVR, controladoras o software ya instalado, según compatibilidad</div></div></li>
+      <li><span class="box"></span><div><div class="it-main" contenteditable="true">Integración entre líneas Totem</div><div class="it-sub" contenteditable="true">CCTV + Accesos + Intrusión + Perifoneo en una sola plataforma de gestión</div></div></li>
+      <li><span class="box"></span><div><div class="it-main" contenteditable="true">Integración con plataformas de terceros (VMS / PSIM)</div><div class="it-sub" contenteditable="true">Vía ONVIF / SDK / API según marca y protocolo</div></div></li>
+      <li><span class="box"></span><div><div class="it-main" contenteditable="true">Integración con motores de analítica de video</div><div class="it-sub" contenteditable="true">Plataformas de IA listadas más abajo</div></div></li>
+    </ul>
+    <button class="addrow" onclick="addRow('integ')">+ Agregar ítem</button>
+
+    <div class="group-title">Marcas condicionadas a usar</div>
+    <p style="font-size:12.5px;color:var(--muted);margin:-4px 0 8px 15px">Selecciona las marcas homologadas para este proyecto. Haz clic para activar/desactivar. Puedes agregar marcas adicionales.</p>
+    <div class="brand-grid" id="brand-grid">
+      <span class="brand-chip on" onclick="toggleBrand(this)"><span class="bx">&#10003;</span>Hikvision</span>
+      <span class="brand-chip on" onclick="toggleBrand(this)"><span class="bx">&#10003;</span>Dahua</span>
+      <span class="brand-chip" onclick="toggleBrand(this)"><span class="bx"></span>Axis</span>
+      <span class="brand-chip" onclick="toggleBrand(this)"><span class="bx"></span>Hanwha</span>
+      <span class="brand-chip" onclick="toggleBrand(this)"><span class="bx"></span>ZKTeco</span>
+      <span class="brand-chip" onclick="toggleBrand(this)"><span class="bx"></span>Bosch</span>
+      <span class="brand-chip" onclick="toggleBrand(this)"><span class="bx"></span>Uniview</span>
+      <span class="brand-chip" onclick="toggleBrand(this)"><span class="bx"></span>Genetec</span>
+      <button class="brand-add-btn" onclick="addCustomBrand()">+ Agregar marca</button>
+    </div>
+    <div class="note" style="margin-top:12px"><b>Condición.</b> <span contenteditable="true">El uso de marcas o equipos fuera de las homologadas debe ser aprobado previamente por Totem; de lo contrario no se garantiza compatibilidad, soporte ni vigencia de la garantía.</span></div>
+
+    <div class="group-title">Esquema de grabación y almacenamiento</div>
+    <p style="font-size:12.5px;color:var(--muted);margin:-4px 0 8px 15px">Selecciona uno o más esquemas. Completa los días de retención y notas para cada opción activa.</p>
+    <div class="rec-options">
+      <div class="rec-item" id="rec-local">
+        <div class="rec-header" onclick="toggleRecOption(this)">
+          <div class="rec-chk"></div>
+          <span class="rec-icon">💾</span>
+          <span class="rec-name">Local</span>
+          <span class="rec-tag">NVR / Servidor en sitio</span>
+        </div>
+        <div class="rec-body">
+          <div class="frow"><label>Días de retención:</label><input type="number" placeholder="30" min="1"> días</div>
+          <textarea placeholder="Notas: capacidad de disco, RAID, ubicación del NVR..." rows="2"></textarea>
+        </div>
+      </div>
+      <div class="rec-item" id="rec-nube">
+        <div class="rec-header" onclick="toggleRecOption(this)">
+          <div class="rec-chk"></div>
+          <span class="rec-icon">&#x2601;&#xFE0F;</span>
+          <span class="rec-name">Nube</span>
+          <span class="rec-tag">Respaldo cloud por eventos o 24/7</span>
+        </div>
+        <div class="rec-body">
+          <div class="frow"><label>Días de retención:</label><input type="number" placeholder="15" min="1"> días</div>
+          <div class="frow"><label>Modalidad:</label>
+            <select><option>Por eventos</option><option>24/7 continuo</option><option>Mixto</option></select>
+          </div>
+          <textarea placeholder="Notas: proveedor cloud, ancho de banda requerido..." rows="2"></textarea>
+        </div>
+      </div>
+      <div class="rec-item" id="rec-totem">
+        <div class="rec-header" onclick="toggleRecOption(this)">
+          <div class="rec-chk"></div>
+          <span class="rec-icon">&#x1F3E2;</span>
+          <span class="rec-name">Infraestructura Totem</span>
+          <span class="rec-tag">Servicio administrado · sin inversión en hardware</span>
+        </div>
+        <div class="rec-body">
+          <div class="frow"><label>Días de retención:</label><input type="number" placeholder="30" min="1"> días</div>
+          <textarea placeholder="Notas: plan contratado, SLA de almacenamiento, redundancia..." rows="2"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="group-title">Control de Accesos — TOTEM PASS</div>
+    <div class="tpass">
+      <div class="tp-h"><span class="tp-logo">TOTEM PASS</span><span class="tp-tag">Plataforma de control de accesos</span></div>
+      <div class="tp-body">
+        <div class="tp-select-section">
+          <div class="tp-slabel">1 · Tipo de acceso (selección múltiple)</div>
+          <div class="tp-btns">
+            <button class="tp-btn" onclick="toggleTP(this)">&#x1F6B6; Peatonal</button>
+            <button class="tp-btn" onclick="toggleTP(this)">&#x1F697; Vehicular</button>
+          </div>
+        </div>
+        <div class="tp-divider"></div>
+        <div class="tp-select-section">
+          <div class="tp-slabel">2 · Modalidad de lectura (selección múltiple)</div>
+          <div class="tp-btns">
+            <button class="tp-btn" onclick="toggleTP(this)">&#x1F533; Lectura QR</button>
+            <button class="tp-btn" onclick="toggleTP(this)">&#x1F642; Lectura Facial</button>
+            <button class="tp-btn" onclick="toggleTP(this)">&#x261D; Lectura Biométrica</button>
+          </div>
+        </div>
+        <div class="tp-divider"></div>
+        <div class="tp-note" contenteditable="true">Gestión centralizada de usuarios, perfiles y horarios; bitácora de eventos e integración con CCTV y Monitoreo.</div>
+        <div class="tp-divider"></div>
+        <div class="tp-select-section">
+          <div class="tp-slabel">Observaciones TOTEM PASS</div>
+          <textarea class="tp-obs" placeholder="Agregar detalles adicionales, configuraciones especiales, integraciones o restricciones..." rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="group-title">Analítica de video ofertada</div>
+    <p style="font-size:12.5px;color:var(--muted);margin:-4px 0 8px 15px">Selecciona los motores incluidos. Para cada uno, registra las cámaras asignadas con su ID, ubicación y tipo de analítica.</p>
+    <div class="analytics-list">
+
+      <div class="an-item" id="an-incoresoft">
+        <div class="an-item-head" onclick="toggleAnalytics(this)">
+          <div class="an-item-chk"></div>
+          <div class="an-item-ico">&#x1F9E0;</div>
+          <div><div class="an-item-name">Incoresoft</div><div class="an-item-desc">LPR, reconocimiento facial y analítica forense de video</div></div>
+        </div>
+        <div class="an-item-body">
+          <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Cámaras asignadas</div>
+          <table class="an-cam-tbl"><thead><tr><th>ID Cámara</th><th>Ubicación</th><th>Tipo de analítica</th><th></th></tr></thead>
+          <tbody id="cams-incoresoft"></tbody></table>
+          <button class="an-add-cam" onclick="addAnalyticsCam('cams-incoresoft')">+ Agregar cámara</button>
+        </div>
+      </div>
+
+      <div class="an-item" id="an-isentry">
+        <div class="an-item-head" onclick="toggleAnalytics(this)">
+          <div class="an-item-chk"></div>
+          <div class="an-item-ico">&#x1F6F0;&#xFE0F;</div>
+          <div><div class="an-item-name">iSentry</div><div class="an-item-desc">Detección de comportamientos anómalos por autoaprendizaje</div></div>
+        </div>
+        <div class="an-item-body">
+          <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Cámaras asignadas</div>
+          <table class="an-cam-tbl"><thead><tr><th>ID Cámara</th><th>Ubicación</th><th>Tipo de analítica</th><th></th></tr></thead>
+          <tbody id="cams-isentry"></tbody></table>
+          <button class="an-add-cam" onclick="addAnalyticsCam('cams-isentry')">+ Agregar cámara</button>
+        </div>
+      </div>
+
+      <div class="an-item" id="an-neurallabs">
+        <div class="an-item-head" onclick="toggleAnalytics(this)">
+          <div class="an-item-chk"></div>
+          <div class="an-item-ico">&#x1F697;</div>
+          <div><div class="an-item-name">Neural Labs</div><div class="an-item-desc">ANPR/LPR y clasificación de vehículos</div></div>
+        </div>
+        <div class="an-item-body">
+          <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Cámaras asignadas</div>
+          <table class="an-cam-tbl"><thead><tr><th>ID Cámara</th><th>Ubicación</th><th>Tipo de analítica</th><th></th></tr></thead>
+          <tbody id="cams-neurallabs"></tbody></table>
+          <button class="an-add-cam" onclick="addAnalyticsCam('cams-neurallabs')">+ Agregar cámara</button>
+        </div>
+      </div>
+
+      <div class="an-item" id="an-actuate">
+        <div class="an-item-head" onclick="toggleAnalytics(this)">
+          <div class="an-item-chk"></div>
+          <div class="an-item-ico">&#x1F6E1;&#xFE0F;</div>
+          <div><div class="an-item-name">Actuate</div><div class="an-item-desc">Detección de armas e intrusos en tiempo real mediante IA</div></div>
+        </div>
+        <div class="an-item-body">
+          <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Cámaras asignadas</div>
+          <table class="an-cam-tbl"><thead><tr><th>ID Cámara</th><th>Ubicación</th><th>Tipo de analítica</th><th></th></tr></thead>
+          <tbody id="cams-actuate"></tbody></table>
+          <button class="an-add-cam" onclick="addAnalyticsCam('cams-actuate')">+ Agregar cámara</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 4. SERVICIOS GENERALES -->
+  <section>
+    <div class="sec-head"><div class="sec-num">5</div><h2>Servicios incluidos en el alcance</h2></div>
+    <p class="sec-desc">Actividades que Totem ejecuta como parte del proyecto. Marca y edita según corresponda.</p>
+    <ul class="ck" data-grp="serv">
+      <li><span class="box"></span><div><div class="it-main" contenteditable="true">Ingeniería de detalle</div><div class="it-sub" contenteditable="true">Levantamiento de sitio y definición de puntos de instalación</div></div></li>
+      <li><span class="box"></span><div><div class="it-main" contenteditable="true">Suministro de equipos</div><div class="it-sub" contenteditable="true">Entrega de todos los equipos listados en la sección 2</div></div></li>
+      <li><span class="box"></span><div><div class="it-main" contenteditable="true">Instalación de ductería y cableado estructurado</div><div class="it-sub" contenteditable="true">Tubería, canalización y tendido de cable</div></div></li>
+      <li><span class="box"></span><div><div class="it-main" contenteditable="true">Instalación física y configuración de equipos</div><div class="it-sub" contenteditable="true">Montaje, parametrización y calibración de sensores</div></div></li>
+      <li><span class="box"></span><div><div class="it-main" contenteditable="true">Integración con plataforma de monitoreo</div><div class="it-sub" contenteditable="true">Alta de tanques, equipos y usuarios en el sistema</div></div></li>
+      <li><span class="box"></span><div><div class="it-main" contenteditable="true">Pruebas, puesta en operación y capacitación</div><div class="it-sub" contenteditable="true">Validación con el cliente y entrenamiento al personal</div></div></li>
+      <li><span class="box"></span><div><div class="it-main" contenteditable="true">Documentación y acta de entrega</div><div class="it-sub" contenteditable="true">Planos, manuales y cierre formal</div></div></li>
+    </ul>
+    <button class="addrow" onclick="addRow('serv')">+ Agregar ítem</button>
+  </section>
+
+  <!-- 5. MONITOREO DE COMBUSTIBLE -->
+  <section id="fuel-section" style="display:none">
+    <div class="sec-head"><div class="sec-num">6</div><h2>Monitoreo de Combustible — Alcance del servicio</h2></div>
+    <p class="sec-desc">Rutina de control operada por Totem. Detalle por bloque, con su cadencia y entregables, para presentar y vender el servicio.</p>
+    <div class="fuel-grid">
+
+      <div class="fuel-card">
+        <div class="fc-head"><div class="fc-num">1</div><h4>Monitoreo Diario</h4><span class="cad">Diario</span></div>
+        <ul class="ck" data-grp="f1">
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Revisar niveles de combustible por tanque</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Validar despachos realizados</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Detectar variaciones o consumos inusuales</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Verificar equipos en línea (sensores / sistema)</div></div></li>
+        </ul>
+      </div>
+
+      <div class="fuel-card">
+        <div class="fc-head"><div class="fc-num">2</div><h4>Control de Inventario</h4><span class="cad">Diario</span></div>
+        <ul class="ck" data-grp="f2">
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Comparar stock inicial vs final</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Validar ingresos (cargas de combustible)</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Validar egresos (despachos)</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Revisar diferencias (teórico vs real)</div></div></li>
+        </ul>
+      </div>
+
+      <div class="fuel-card">
+        <div class="fc-head"><div class="fc-num">3</div><h4>Control de Despachos</h4><span class="cad">Diario</span></div>
+        <ul class="ck" data-grp="f3">
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Confirmar volumen despachado</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Validar usuario / unidad abastecida</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Detectar despachos no autorizados</div></div></li>
+        </ul>
+      </div>
+
+      <div class="fuel-card">
+        <div class="fc-head"><div class="fc-num">4</div><h4>Consumo de Equipos (Bombas / Motores)</h4><span class="cad">Diario / Semanal</span></div>
+        <ul class="ck" data-grp="f4">
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Revisar consumo por equipo</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Comparar contra histórico</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Detectar sobreconsumo</div></div></li>
+        </ul>
+      </div>
+
+      <div class="fuel-card">
+        <div class="fc-head"><div class="fc-num">5</div><h4>Reportería</h4><span class="cad">Diario · Semanal · Mensual</span></div>
+        <ul class="ck" data-grp="f5">
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Generar reporte diario (Excel)</div></div><span class="dl">Entregable</span></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Generar reporte semanal (Excel o PDF)</div></div><span class="dl">Entregable</span></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Generar reporte mensual (PDF o BI)</div></div><span class="dl">Entregable</span></li>
+        </ul>
+      </div>
+
+      <div class="fuel-card">
+        <div class="fc-head"><div class="fc-num">6</div><h4>Alertas</h4><span class="cad">Tiempo real</span></div>
+        <ul class="ck" data-grp="f6">
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Bajo nivel de combustible</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Cargas de combustible</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Equipos sin conexión</div></div></li>
+        </ul>
+      </div>
+
+      <div class="fuel-card span">
+        <div class="fc-head"><div class="fc-num">7</div><h4>Seguimiento</h4><span class="cad">Continuo</span></div>
+        <ul class="ck" data-grp="f7">
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Registrar novedades</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Notificar al cliente</div></div></li>
+          <li><span class="box"></span><div><div class="it-main" contenteditable="true">Dar seguimiento a desviaciones</div></div></li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="note"><b>Flujo del servicio:</b> <span contenteditable="true">Detección (bloques 1–4) → Alerta (bloque 6) → Seguimiento y notificación al cliente (bloque 7), respaldado por la reportería periódica (bloque 5). Toda desviación detectada se registra y se gestiona hasta su cierre.</span></div>
+  </section>
+
+  <!-- 6. SLA -->
+  <section id="sla-section" style="display:none">
+    <div class="sec-head"><div class="sec-num">7</div><h2>Niveles de servicio (SLA) — Monitoreo de Combustible</h2></div>
+    <p class="sec-desc">Compromisos de servicio que respaldan la operación. Edita los valores según el plan contratado.</p>
+
+    <div class="group-title">Cobertura y entregables</div>
+    <div class="fuel-grid">
+      <div class="sla-card">
+        <div class="sla-ico">&#x1F552;</div>
+        <div class="sla-lbl">Horario de monitoreo</div>
+        <div class="sla-val">
+          <select>
+            <option>Lun–Vie · 08:00–18:00</option>
+            <option>Lun–Vie · 07:00–19:00</option>
+            <option>Lun–Sáb · 08:00–18:00</option>
+            <option>Lun–Sáb · 07:00–19:00</option>
+            <option>24 / 7 completo</option>
+            <option>Personalizado</option>
+            <option>NO APLICA</option>
+          </select>
+        </div>
+        <div class="sla-sub"><input type="text" placeholder="Descripción adicional o condiciones..."></div>
+      </div>
+      <div class="sla-card">
+        <div class="sla-ico">&#x1F4CA;</div>
+        <div class="sla-lbl">Frecuencia de reportes</div>
+        <div class="sla-val">
+          <select>
+            <option>Diario · Semanal · Mensual</option>
+            <option>Solo Diario</option>
+            <option>Solo Semanal</option>
+            <option>Solo Mensual</option>
+            <option>Diario · Mensual</option>
+            <option>NO APLICA</option>
+          </select>
+        </div>
+        <div class="sla-sub"><input type="text" placeholder="Formato: Excel, PDF, BI, dashboard..."></div>
+      </div>
+      <div class="sla-card">
+        <div class="sla-ico">&#x1F7E2;</div>
+        <div class="sla-lbl">Disponibilidad de plataforma</div>
+        <div class="sla-val"><input type="text" value="99.5% · acceso 24/7"></div>
+        <div class="sla-sub"><input type="text" placeholder="Condiciones de acceso y monitoreo en línea..."></div>
+      </div>
+      <div class="sla-card">
+        <div class="sla-ico">&#x1F6E0;&#xFE0F;</div>
+        <div class="sla-lbl">Soporte técnico</div>
+        <div class="sla-val">
+          <select>
+            <option>L–V horario laboral</option>
+            <option>L–V 07:00–19:00</option>
+            <option>L–Sáb 08:00–18:00</option>
+            <option>24 / 7</option>
+            <option>NO APLICA</option>
+          </select>
+        </div>
+        <div class="sla-sub"><input type="text" placeholder="Detalle: sensores, telemetría, plataforma..."></div>
+      </div>
+    </div>
+
+    <div class="group-title">Tiempos de respuesta ante alertas</div>
+    <table class="resp">
+      <thead><tr><th style="width:120px">Prioridad</th><th style="text-align:left">Ejemplos</th><th style="text-align:left;width:200px">Canal de notificación</th><th style="text-align:center;width:130px">Respuesta</th><th style="width:36px"></th></tr></thead>
+      <tbody id="sla-resp-tbody">
+        <tr>
+          <td><select style="width:100%"><option>&#x25CF; Crítica</option><option>&#x25CF; Media</option><option>&#x25CF; Baja</option></select></td>
+          <td><input placeholder="Despacho no autorizado · equipo crítico sin conexión"></td>
+          <td><input placeholder="Llamada + WhatsApp + correo"></td>
+          <td><input placeholder="≤ 15 min" style="text-align:center"></td>
+          <td><button class="sla-del-row" onclick="this.closest('tr').remove()">&#x2715;</button></td>
+        </tr>
+        <tr>
+          <td><select style="width:100%"><option>&#x25CF; Media</option><option>&#x25CF; Crítica</option><option>&#x25CF; Baja</option></select></td>
+          <td><input placeholder="Bajo nivel de combustible · sobreconsumo de equipo"></td>
+          <td><input placeholder="WhatsApp + correo"></td>
+          <td><input placeholder="≤ 2 horas" style="text-align:center"></td>
+          <td><button class="sla-del-row" onclick="this.closest('tr').remove()">&#x2715;</button></td>
+        </tr>
+        <tr>
+          <td><select style="width:100%"><option>&#x25CF; Baja</option><option>&#x25CF; Crítica</option><option>&#x25CF; Media</option></select></td>
+          <td><input placeholder="Variaciones menores · carga de combustible registrada"></td>
+          <td><input placeholder="Correo / plataforma"></td>
+          <td><input placeholder="Mismo día / próximo reporte" style="text-align:center"></td>
+          <td><button class="sla-del-row" onclick="this.closest('tr').remove()">&#x2715;</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="sla-add-btn" onclick="addSlaRow()">+ Agregar nivel de alerta</button>
+    <div class="note" style="margin-top:14px"><b>Nota sobre el alcance del SLA.</b> <span contenteditable="true">Los tiempos de respuesta aplican a la detección y notificación por parte de Totem. La acción correctiva física en sitio es responsabilidad del cliente. El cumplimiento del SLA depende de la disponibilidad de energía y conectividad a internet en sitio.</span></div>
+  </section>
+
+  <!-- 7. INCLUYE / NO INCLUYE -->
+  <section>
+    <div class="sec-head"><div class="sec-num">8</div><h2>Qué incluye y qué NO incluye la oferta</h2></div>
+    <p class="sec-desc">Resumen claro del límite del alcance. Edita cada punto según el proyecto.</p>
+    <div class="split">
+      <div class="panel yes">
+        <h3>✓ SÍ incluye Totem</h3>
+        <ul data-grp="inc-yes">
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">+</span><span contenteditable="true">Suministro e instalación de los equipos listados (incluye sensores y telemetría de combustible).</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">+</span><span contenteditable="true">Ingeniería, cableado, configuración y calibración.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">+</span><span contenteditable="true">Alta en plataforma de monitoreo y puesta en marcha.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">+</span><span contenteditable="true">Operación del checklist de monitoreo y reportería (diaria/semanal/mensual).</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">+</span><span contenteditable="true">Alertas, registro y seguimiento de desviaciones hasta su cierre.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">+</span><span contenteditable="true">Capacitación, documentación, acta de entrega, garantía y soporte post-venta.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+        </ul>
+        <button class="addrow" onclick="addPanel('inc-yes','+')">+ Agregar punto</button>
+      </div>
+      <div class="panel not">
+        <h3>✕ NO incluye (responsabilidad del cliente)</h3>
+        <ul data-grp="inc-no">
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">−</span><span contenteditable="true">Obra civil y adecuación de tanques / áreas.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">−</span><span contenteditable="true">Suministro del combustible y su logística.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">−</span><span contenteditable="true">Conectividad a internet (ISP) en sitio.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">−</span><span contenteditable="true">Suministro eléctrico a los equipos (punto de acometida).</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">−</span><span contenteditable="true">Acciones físicas de corrección ante una desviación (Totem detecta y reporta).</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+        </ul>
+        <button class="addrow" onclick="addPanel('inc-no','−')">+ Agregar punto</button>
+      </div>
+    </div>
+    <div class="note"><b>Advertencia contractual.</b> <span contenteditable="true">Cualquier trabajo fuera de este alcance requerirá una orden de cambio formal con valoración económica adicional. Las exclusiones deben ser socializadas y aceptadas por el cliente antes de la firma de la propuesta.</span></div>
+  </section>
+
+  <!-- 8. RESPONSABILIDADES -->
+  <section>
+    <div class="sec-head"><div class="sec-num">9</div><h2>Matriz de responsabilidades</h2></div>
+    <p class="sec-desc">Define el responsable de cada actividad. Usa los selectores Totem / Cliente.</p>
+    <table class="resp">
+      <thead><tr><th>Actividad</th><th>Totem</th><th>Cliente</th></tr></thead>
+      <tbody id="respBody"></tbody>
+    </table>
+    <button class="addrow" onclick="addResp()">+ Agregar actividad</button>
+  </section>
+
+  <!-- 9. SUPUESTOS -->
+  <section>
+    <div class="sec-head"><div class="sec-num">10</div><h2>Supuestos y condiciones del proyecto</h2></div>
+    <p class="sec-desc">Condiciones que el cliente confirma para garantizar la correcta ejecución y operación del servicio.</p>
+    <div class="panel cond">
+      <h3>✓ Condiciones que confirma el cliente</h3>
+      <ul data-grp="sup">
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">✓</span><span contenteditable="true">Suministro eléctrico estable en los puntos de instalación.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">✓</span><span contenteditable="true">Conectividad a internet estable para telemetría y acceso remoto.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">✓</span><span contenteditable="true">Acceso a tanques, equipos y áreas para instalación y calibración.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">✓</span><span contenteditable="true">Datos base entregados por el cliente: capacidad de tanques, equipos y unidades.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">✓</span><span contenteditable="true">Punto de contacto designado y disponible durante el servicio.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+          <li><span class="sel" onclick="toggleSel(event,this)"></span><span class="m">✓</span><span contenteditable="true">Infraestructura de red existente compatible con la solución.</span><button class="del" title="Eliminar" onclick="delItem(event,this)">×</button></li>
+      </ul>
+      <button class="addrow" onclick="addPanel('sup','✓')">+ Agregar condición</button>
+    </div>
+    <div class="note"><b>Recomendaciones opcionales (cotización aparte):</b> <span contenteditable="true">UPS para equipos críticos, respaldo en nube, tablero BI dedicado y endurecimiento de ciberseguridad (VLAN, contraseñas robustas, doble factor).</span></div>
+  </section>
+
+  <!-- TRAZABILIDAD -->
+  <section>
+    <div class="sec-head"><div class="sec-num">11</div><h2>Trazabilidad — Cómo se cubre cada requerimiento</h2></div>
+    <p class="sec-desc">Cada requerimiento ingresado en la primera sección aparece aquí. Indica con qué de lo ofertado se soluciona y su estado de cobertura.</p>
+    <table class="resp">
+      <thead><tr><th style="width:50px">#</th><th style="text-align:left;width:28%">Requerimiento</th><th style="width:180px">Línea / componente</th><th style="text-align:left">¿Con qué se soluciona? (lo ofertado)</th><th style="width:120px">Estado</th></tr></thead>
+      <tbody id="trazBody"></tbody>
+    </table>
+    <div class="note"><b>Resultado:</b> <span id="trazResumen">Sin requerimientos ingresados todavía.</span></div>
+  </section>
+
+  <div class="tip">💡 <b>Cómo usar:</b> esta es una plantilla general. Edita los campos haciendo clic, ajusta el estado de cada línea de negocio, marca/agrega ítems con los botones "+", y usa <b>Imprimir / Guardar PDF</b> para entregar al cliente.</div>
+
+  <div class="actions">
+    <button class="btn reset" onclick="resetChecks()">Desmarcar todo</button>
+    <button class="btn print" onclick="printWithVersion()">Imprimir / Guardar PDF</button>
+  </div>
+
+  <!-- FIRMAS (visible solo en impresión) -->
+  <div id="signatures-section" style="display:none;margin-top:40px;page-break-before:always">
+    <p style="text-align:center;font-weight:800;margin-bottom:30px;color:var(--marian)">ACEPTACIÓN Y CONFORMIDAD</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:50px">
+      <div style="text-align:center">
+        <div style="border-top:2px solid #000;height:60px;display:flex;align-items:flex-end">
+          <span id="sig-totem-name" style="font-weight:700;font-size:12px"></span>
+        </div>
+        <p style="margin:8px 0 0;font-size:11px;color:var(--muted)"><b>Responsable TOTEM</b><br>Nombre y firma</p>
+      </div>
+      <div style="text-align:center">
+        <div style="border-top:2px solid #000;height:60px;display:flex;align-items:flex-end">
+          <span id="sig-client-name" style="font-weight:700;font-size:12px"></span>
+        </div>
+        <p style="margin:8px 0 0;font-size:11px;color:var(--muted)"><b>Cliente / Autorizado</b><br>Nombre y firma</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <img class="mk" src="data:image/png;base64,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" alt="">
+    <div>TOTEM Seguridad Electrónica · Checklist General de Solución Ofertada</div>
+    <div>Documento de uso interno y comercial. Su reproducción o distribución no autorizada está prohibida.</div>
+  </footer>
+</div>
+
+<script>
+  // ==================== GTT + VERSIONES PREVIAS ====================
+  var gttCounter=parseInt(localStorage.getItem('gttCounter')||'0')+1;
+  var projectVersions={};
+  function updateGTT(){
+    var gttEl=document.getElementById('gtt-code');
+    if(gttEl){ gttEl.value='GTT-'+String(gttCounter).padStart(3,'0'); }
+  }
+  function saveProjectVersion(projName){
+    if(!projName.trim()) return;
+    if(!projectVersions[projName]) projectVersions[projName]=[];
+    var ficha=document.querySelector('.ficha');
+    var data={fecha:new Date().toISOString(),valores:{}};
+    ficha.querySelectorAll('input[required]').forEach(function(inp){
+      if(inp.id!=='gtt-code') data.valores[inp.previousElementSibling.textContent||inp.id]=inp.value;
+    });
+    projectVersions[projName].push(data);
+    localStorage.setItem('proj_versions_'+projName,JSON.stringify(projectVersions[projName]));
+  }
+  function loadPreviousVersions(projName){
+    var stored=localStorage.getItem('proj_versions_'+projName);
+    if(stored){ projectVersions[projName]=JSON.parse(stored); }
+  }
+  document.getElementById('proj-name').addEventListener('change',function(){
+    loadPreviousVersions(this.value);
+  });
+  updateGTT();
+
+  function pickArchi(el){ el.parentNode.querySelectorAll('.opt').forEach(function(o){o.removeAttribute('data-on')}); el.setAttribute('data-on','1'); }
+  // ==================== LINEAS DE NEGOCIO + EQUIPAMIENTO ====================
+  function getLineState(keyword){
+    var lines=document.querySelectorAll('.line');
+    for(var i=0;i<lines.length;i++){
+      var nm=lines[i].querySelector('.ln-name');
+      if(nm&&nm.textContent.indexOf(keyword)>=0) return lines[i].getAttribute('data-state')||'no';
+    }
+    return 'no';
+  }
+  function updateEquipmentVisibility(){
+    var cctvSt=getLineState('Videovigilancia');
+    var fuelSt=getLineState('Monitoreo de Combustible');
+    var netSt=getLineState('Redes e Infraestructura');
+    var grpC=document.getElementById('grp-cctv');
+    var grpF=document.getElementById('grp-fuel');
+    var grpN=document.getElementById('grp-net');
+    var fuelSection=document.getElementById('fuel-section');
+    if(grpC){
+      var showC=cctvSt==='inc'||cctvSt==='fut';
+      grpC.classList.toggle('hidden',!showC);
+      var bc=grpC.querySelector('.grp-status');
+      if(bc){bc.textContent=cctvSt==='inc'?'INCLUIDA':'FASE FUTURA';bc.className='grp-status '+(cctvSt==='inc'?'inc':'fut');}
+    }
+    if(grpF){ grpF.classList.toggle('hidden',fuelSt!=='inc'); }
+    if(grpN){
+      var showN=netSt==='inc'||netSt==='fut';
+      grpN.classList.toggle('hidden',!showN);
+      var bn=grpN.querySelector('.grp-status');
+      if(bn){bn.textContent=netSt==='inc'?'INCLUIDA':'FASE FUTURA';bn.className='grp-status '+(netSt==='inc'?'inc':'fut');}
+    }
+    if(fuelSection){ fuelSection.style.display=fuelSt==='inc'?'block':'none'; }
+    var slaSection=document.getElementById('sla-section');
+    if(slaSection){ slaSection.style.display=fuelSt==='inc'?'block':'none'; }
+  }
+  function setState(btn,st){ btn.closest('.line').setAttribute('data-state',st); updateEquipmentVisibility(); }
+  updateEquipmentVisibility();
+
+  // ==================== MARCAS MULTI-SELECT ====================
+  function toggleBrand(el){ el.classList.toggle('on'); var bx=el.querySelector('.bx'); if(bx) bx.textContent=el.classList.contains('on')?'✓':''; }
+  function addCustomBrand(){
+    var name=prompt('Nombre de la marca:');
+    if(!name||!name.trim()) return;
+    var grid=document.getElementById('brand-grid');
+    var btn=grid.querySelector('.brand-add-btn');
+    var chip=document.createElement('span');
+    chip.className='brand-chip on';
+    chip.onclick=function(){ toggleBrand(this); };
+    chip.innerHTML='<span class="bx">✓</span>'+name.trim();
+    grid.insertBefore(chip,btn);
+  }
+
+  // ==================== ESQUEMA DE GRABACIÓN ====================
+  function toggleRecOption(hdr){ hdr.closest('.rec-item').classList.toggle('on'); }
+
+  // ==================== TOTEM PASS ====================
+  function toggleTP(el){ el.classList.toggle('on'); }
+
+  // ==================== ANALÍTICA DE VIDEO ====================
+  function toggleAnalytics(hd){ hd.closest('.an-item').classList.toggle('on'); }
+  function addAnalyticsCam(tbodyId){
+    var tb=document.getElementById(tbodyId);
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><input placeholder="CAM-001" style="min-width:80px"></td>'
+      +'<td><input placeholder="Acceso principal"></td>'
+      +'<td><select><option>LPR / ANPR</option><option>Reconocimiento Facial</option><option>Detección Intrusos</option><option>Detección Armas</option><option>Comportamiento Anómalo</option><option>Conteo de Personas</option><option>Otra</option></select></td>'
+      +'<td><button class="an-del-row" onclick="this.closest(\'tr\').remove()">✕</button></td>';
+    tb.appendChild(tr);
+  }
+
+  // ==================== SLA TABLE ====================
+  function addSlaRow(){
+    var tb=document.getElementById('sla-resp-tbody');
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><select style="width:100%"><option>● Crítica</option><option>● Media</option><option>● Baja</option></select></td>'
+      +'<td><input placeholder="Ejemplo de alerta..."></td>'
+      +'<td><input placeholder="Canal de notificación..."></td>'
+      +'<td><input placeholder="ej. ≤ 30 min" style="text-align:center"></td>'
+      +'<td><button class="sla-del-row" onclick="this.closest(\'tr\').remove()">✕</button></td>';
+    tb.appendChild(tr);
+  }
+
+  function bindCheck(li){
+    li.style.cursor='pointer';
+    var box=li.querySelector('.box');
+    if(box){
+      box.style.cursor='pointer';
+      box.style.userSelect='none';
+      box.addEventListener('click',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        li.classList.toggle('checked');
+      });
+    }
+    // Permitir click en cualquier parte del li (excepto inputs y editable)
+    li.addEventListener('click',function(e){
+      if(e.target===box) return; // Ya manejado arriba
+      if(e.target.tagName==='INPUT') return;
+      if(e.target.tagName==='SELECT') return;
+      if(e.target.tagName==='BUTTON') return;
+      if(e.target.tagName==='TEXTAREA') return;
+      if(e.target.contentEditable==='true') return;
+      // Check si estamos dentro de un editable
+      var parent=e.target.closest('[contenteditable="true"]');
+      if(parent) return;
+      e.preventDefault();
+      e.stopPropagation();
+      li.classList.toggle('checked');
+    });
+  }
+  document.querySelectorAll('ul.ck li').forEach(bindCheck);
+
+  function addRow(grp){
+    var ul=document.querySelector('ul.ck[data-grp="'+grp+'"]');
+    var hasQty=ul.querySelector('.qty')!==null;
+    var li=document.createElement('li');
+    var qty=hasQty?'<span class="qty"><input placeholder="0"></span>':'';
+    li.innerHTML=qty+'<span class="box"></span><div><div class="it-main" contenteditable="true">Nuevo ítem</div><div class="it-sub" contenteditable="true">Descripción</div></div>';
+    ul.appendChild(li); bindCheck(li); li.querySelector('.it-main').focus();
+  }
+  function addPanel(grp,mark){
+    var ul=document.querySelector('ul[data-grp="'+grp+'"]');
+    var li=document.createElement('li');
+    li.innerHTML='<span class="sel" onclick="toggleSel(event,this)"></span><span class="m">'+mark+'</span><span contenteditable="true">Nuevo punto</span><button class="del" title="Eliminar" onclick="delItem(event,this)">\u00d7</button>';
+    ul.appendChild(li); li.querySelector('span[contenteditable]').focus();
+  }
+  function toggleSel(e,el){ e.stopPropagation(); el.closest('li').classList.toggle('excluded'); }
+  function delItem(e,el){ e.stopPropagation(); el.closest('li').remove(); }
+  var respRows=[
+    ['Suministro de equipos y sensores','t',''],
+    ['Instalación, cableado y calibración','t',''],
+    ['Configuración y alta en plataforma','t',''],
+    ['Energía eléctrica (punto de acometida)','','c'],
+    ['Conectividad a internet (ISP)','','c'],
+    ['Permisos de trabajo y acceso','','c'],
+    ['Operación del monitoreo y reportería','t',''],
+    ['Emisión de alertas y seguimiento','t',''],
+    ['Acción correctiva física ante desviación','','c'],
+    ['Capacitación operativa','t','']
+  ];
+  function pick(val){
+    return '<select class="pick">'+
+      '<option value=""'+(val==''?' selected':'')+'>—</option>'+
+      '<option value="r"'+(val=='r'?' selected':'')+'>Responsable</option>'+
+      '<option value="co"'+(val=='co'?' selected':'')+'>Coordina</option>'+
+      '<option value="va"'+(val=='va'?' selected':'')+'>Valida</option>'+
+      '</select>';
+  }
+  var tb=document.getElementById('respBody');
+  respRows.forEach(function(r){ var tr=document.createElement('tr'); tr.innerHTML='<td contenteditable="true">'+r[0]+'</td><td>'+pick(r[1]?'r':'')+'</td><td>'+pick(r[2]?'r':'')+'</td>'; tb.appendChild(tr); });
+  function addResp(){ var tr=document.createElement('tr'); tr.innerHTML='<td contenteditable="true">Nueva actividad</td><td>'+pick('')+'</td><td>'+pick('')+'</td>'; tb.appendChild(tr); tr.querySelector('td').focus(); }
+  // ---- Requerimientos del cliente <-> Trazabilidad ----
+  var reqSeq=0;
+  function selHTML(opts){ return '<select class="pick" style="width:100%">'+opts.map(function(o){return '<option>'+o+'</option>';}).join('')+'</select>'; }
+  function lineSel(){ return selHTML(['—','Videovigilancia / CCTV','Intrusión / Alarmas','Control de Accesos (TOTEM PASS)','Perifoneo / Audio IP','Detección de Incendios','Monitoreo de Combustible','Monitoreo 24/7','Redes e Infraestructura','Analítica de video','Otro']); }
+  function prioSel(){ return selHTML(['Media','Alta','Baja']); }
+  function estadoSel(){ return selHTML(['Cubierto','Parcial','Pendiente']); }
+  function trazResumen(){
+    var rows=document.querySelectorAll('#trazBody tr');
+    var el=document.getElementById('trazResumen');
+    if(!rows.length){ el.textContent='Sin requerimientos ingresados todavía.'; return; }
+    var c=0,p=0,x=0;
+    rows.forEach(function(r){ var v=r.querySelector('select').value; if(v==='Cubierto')c++; else if(v==='Parcial')p++; else x++; });
+    el.textContent=rows.length+' requerimiento(s): '+c+' cubierto(s), '+p+' parcial(es), '+x+' pendiente(s).';
+  }
+  function addReq(focus){
+    reqSeq++; var id='R'+reqSeq;
+    var tr=document.createElement('tr'); tr.setAttribute('data-id',id);
+    tr.innerHTML='<td class="rid">'+id+'</td>'
+      +'<td><input class="cellinp" placeholder="Describe el requerimiento del cliente"></td>'
+      +'<td>'+prioSel()+'</td>'
+      +'<td style="text-align:center"><button class="delx" title="Eliminar" onclick="delReq(\''+id+'\')">\u00d7</button></td>';
+    document.getElementById('reqBody').appendChild(tr);
+    var br=document.createElement('tr'); br.setAttribute('data-id',id);
+    br.innerHTML='<td class="rid">'+id+'</td>'
+      +'<td class="mirror"></td>'
+      +'<td>'+lineSel()+'</td>'
+      +'<td><textarea class="cellinp" rows="2" placeholder="¿Con qué de lo ofertado se cubre este requerimiento?"></textarea></td>'
+      +'<td>'+estadoSel()+'</td>';
+    document.getElementById('trazBody').appendChild(br);
+    var inp=tr.querySelector('input.cellinp'), mir=br.querySelector('.mirror');
+    inp.addEventListener('input',function(){ mir.textContent=inp.value; });
+    br.querySelector('select').addEventListener('change',trazResumen);
+    trazResumen();
+    if(focus) inp.focus();
+  }
+  function delReq(id){
+    document.querySelectorAll('tr[data-id="'+id+'"]').forEach(function(r){r.remove();});
+    trazResumen();
+  }
+  // semillas iniciales (vacías)
+  addReq(false); addReq(false); addReq(false);
+
+  function resetChecks(){ document.querySelectorAll('ul.ck li.checked').forEach(function(li){li.classList.remove('checked')}); }
+
+  // ==================== VERSIÓN + IMPRESIÓN ====================
+  var _versionTracker={};
+  function printWithVersion(){
+    var projInput=document.getElementById('proj-name');
+    var clientInput=document.getElementById('proj-name').closest('.ficha').querySelector('.cell input');
+    var respInput=document.getElementById('resp-totem');
+    var proyecto=(projInput&&projInput.value.trim())||'BORRADOR';
+    var responsable=(respInput&&respInput.value.trim())||'Sin especificar';
+    var clientName=(clientInput&&clientInput.value.trim())||'___________________';
+
+    // Validar campos obligatorios
+    var required=document.querySelectorAll('.ficha input[required]');
+    var allValid=true;
+    required.forEach(function(inp){
+      if(!inp.value.trim()){ inp.style.borderBottomColor='#c0392b'; allValid=false; }
+      else{ inp.style.borderBottomColor=''; }
+    });
+    if(!allValid){ alert('Por favor completa todos los campos requeridos'); return; }
+
+    // Guardar versión anterior
+    saveProjectVersion(proyecto);
+
+    // Incrementar versión
+    if(!_versionTracker[proyecto]) _versionTracker[proyecto]=0;
+    _versionTracker[proyecto]++;
+    var ver='v'+String(_versionTracker[proyecto]).padStart(2,'0');
+
+    // Generar nueva secuencia GTT para próxima vez
+    gttCounter++;
+    localStorage.setItem('gttCounter',gttCounter.toString());
+
+    var now=new Date();
+    var fechaStr=now.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'})
+      +' · '+now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+
+    // Actualizar elementos visibles
+    var vbadge=document.getElementById('doc-version');
+    var vdate=document.getElementById('doc-gen-date');
+    var phdr=document.getElementById('print-header');
+    if(vbadge) vbadge.textContent=ver;
+    if(vdate) vdate.textContent='Generado: '+fechaStr;
+    if(phdr) phdr.innerHTML='<strong>TOTEM Seguridad Electrónica</strong> · Checklist General · <strong>'+proyecto+'</strong> · '+ver+' · '+fechaStr;
+
+    // Mostrar sección de firmas y llenar datos
+    var sigSection=document.getElementById('signatures-section');
+    if(sigSection){
+      sigSection.style.display='block';
+      document.getElementById('sig-totem-name').textContent=responsable;
+      document.getElementById('sig-client-name').textContent=clientName;
+    }
+
+    // Mostrar confirmación de vista previa
+    var confirmMsg='Vista previa lista:\n\n';
+    confirmMsg+='📄 Proyecto: '+proyecto+'\n';
+    confirmMsg+='📋 Versión: '+ver+'\n';
+    confirmMsg+='📅 Fecha: '+fechaStr+'\n';
+    confirmMsg+='👤 Responsable: '+responsable+'\n';
+    confirmMsg+='🏢 Cliente: '+clientName+'\n\n';
+    confirmMsg+='¿Deseas generar el PDF/Imprimir?';
+
+    if(confirm(confirmMsg)){
+      // Generar PDF - abre diálogo nativo del navegador
+      setTimeout(function(){
+        window.print();
+      },200);
+
+      // Ocultar firmas después de un tiempo
+      setTimeout(function(){
+        if(sigSection) sigSection.style.display='none';
+      },2000);
+    } else {
+      // Usuario canceló
+      if(sigSection) sigSection.style.display='none';
+    }
+  }
+</script>
+</body>
+</html>
