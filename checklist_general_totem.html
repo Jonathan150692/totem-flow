@@ -287,8 +287,8 @@ footer .mk{height:28px;opacity:.9;margin-bottom:8px}
 
 @media print{
   body{background:#fff}
-  .actions,.addrow,.tip,.seg button:not(.active),.panel li .del,.panel li .sel,.delx,.an-add-cam,.an-del-row,.sla-add-btn,.sla-del-row,.rec-header::before{display:none}
-  .panel li.excluded{display:none}
+  .actions,.addrow,.tip,.seg button:not(.active),.panel li .del,.panel li .sel,.delx,.an-add-cam,.an-del-row,.sla-add-btn,.sla-del-row,.rec-header::before{display:none!important}
+  .panel li.excluded{display:none!important}
   .seg{border:none}.seg button.active{padding:4px 0;border:none}
   section,.hero{break-inside:avoid}.wrap{padding:0}
   .ficha .cell input{border-bottom:none}
@@ -298,40 +298,69 @@ footer .mk{height:28px;opacity:.9;margin-bottom:8px}
   .equip-group.hidden{display:none!important}
   #signatures-section{display:block!important;page-break-before:always}
 
-  /* MOSTRAR SOLO DATOS SELECCIONADOS */
-  /* Checkboxes: solo mostrar items marcados */
+  /* === FILTRADO COMPLETO: MOSTRAR SOLO DATOS INGRESADOS === */
+
+  /* 1. CHECKBOXES: Solo items marcados */
   ul.ck li:not(.checked){display:none!important}
 
-  /* Líneas de negocio: solo mostrar secciones con estado seleccionado */
+  /* 2. LÍNEAS DE NEGOCIO: Solo con estado seleccionado */
+  .line[data-state="no"]{display:none!important}
   .line[data-state=""]{display:none!important}
 
-  /* Cards de equipamiento/integración: solo mostrar si están seleccionadas */
-  .fuel-card:not(:has(.checked)),
-  .analytics-card:not(:has(.box:before)){display:none!important}
+  /* 3. EQUIPAMIENTO: Solo marcados */
+  ul.ck li.checked .qty input{display:block!important}
+  ul.ck li:not(.checked){display:none!important}
 
-  /* Filas de tabla: solo mostrar si tienen datos */
-  .panel li:not(.excluded):not(:has(input[value=""])):not(:has(select:invalid)){display:block}
+  /* 4. ARQUITECTURA: Solo la seleccionada */
+  .opt:not([data-on="1"]){display:none!important}
 
-  /* Ocultar filas SLA completamente vacías */
-  .sla-row:has(select:not([value]):not([value="NO APLICA"])){display:none!important}
+  /* 5. RECORDING SCHEMA: Solo los activos */
+  .rec-item:not(.on){display:none!important}
+  .rec-body:not(.on){display:none!important}
 
-  /* Ocultar botones de agregar en matriz */
-  .panel button{display:none!important}
-
-  /* Recording options: solo mostrar seleccionadas */
-  .rec-option:not(.active){display:none!important}
-
-  /* TOTEM PASS: solo mostrar opciones seleccionadas */
+  /* 6. TOTEM PASS: Solo opciones y modalidades seleccionadas */
   .tp-option:not(.on){display:none!important}
   .modal-btn:not(.on){display:none!important}
+  .tpass .tp-body:has([contenteditable]:empty){display:none!important}
 
-  /* Video Analytics: solo mostrar seleccionadas */
+  /* 7. VIDEO ANALYTICS: Solo tarjetas seleccionadas */
   .analytics-card:not(.on){display:none!important}
-  .cam-table:not(.on){display:none!important}
+  .cam-table{display:none!important}
+  .analytics-card.on .cam-table{display:table!important}
 
-  /* Ocultar campos vacíos en observaciones */
-  .ficha .cell input:not([value]):not([value=" "]),
-  [contenteditable]:not(:has(*)):empty{display:none!important}
+  /* 8. SERVICIOS: Solo los con datos */
+  .panel li.excluded{display:none!important}
+  .panel li:has(input[value=""]){display:none!important}
+  .panel li:has(select[value=""]){display:none!important}
+
+  /* 9. SLA: Solo filas con datos */
+  #sla-resp-tbody tr:has(select[value=""]),
+  #sla-resp-tbody tr:has(select:not([value])){display:none!important}
+
+  /* 10. MATRIZ DE RESPONSABILIDADES: Solo filas con datos */
+  .panel li:not(.excluded):has(input[value=""]),
+  .panel li:not(.excluded):has(select[value=""]){display:none!important}
+
+  /* 11. OBSERVACIONES: Solo si tienen contenido */
+  [contenteditable]:empty,[contenteditable]:not(:has(*)){display:none!important}
+
+  /* 12. CAMPOS DE ENTRADA: Solo con valor */
+  .ficha .cell input[value=""]{display:none!important}
+
+  /* 13. SECCIONES VACÍAS: Ocultar si no tienen contenido */
+  section:has(ul.ck:not(:has(li.checked))){display:none!important}
+  section:not(:has(input[value!=""])):not(:has(.checked)):not(:has(.on)){display:none!important}
+
+  /* 14. HEADERS DE SECCIONES: Solo si tienen contenido abajo */
+  .group-title:not(:has(+ ul .checked)){display:none!important}
+
+  /* 15. BOTONES Y CONTROLES INTERACTIVOS: Ocultar todos */
+  button,input[type="button"],input[type="submit"]{display:none!important}
+
+  /* 16. ESTILOS PARA IMPRESIÓN LIMPIA */
+  ul.ck li.checked{page-break-inside:avoid;margin-bottom:8px}
+  .panel li{page-break-inside:avoid}
+  table{page-break-inside:avoid}
 }
 </style>
 </head>
